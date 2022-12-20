@@ -560,86 +560,86 @@ suppress=0
 
             IF ( ltg_assim ) THEN
 
-            IF(suppress.EQ.0 .OR. suppress.EQ.2)THEN
+                IF(suppress.EQ.0 .OR. suppress.EQ.2)THEN
 
 
-            CALL KF_eta_PARA(I, J,                  &
-                 U1D,V1D,T1D,QV1D,P1D,DZ1D,W0AVG1D, &
-                 tpart_h1D,tpart_v1D,               &
-                 trigger,                           &
-                 DT,DX,DXSQ,RHO1D,                  &
-                 XLV0,XLV1,XLS0,XLS1,CP,R,G,        &
-                 EP2,SVP1,SVP2,SVP3,SVPT0,          &
-                 DQDT,DQIDT,DQCDT,DQRDT,DQSDT,DTDT, &
-                 RAINCV,PRATEC,NCA,                 &
-                 flag_QI,flag_QS,warm_rain,         &
-                 CUTOP,CUBOT,ishall,CUDT,           & !BSINGH -  Added ishall as arg for WRFCuP
-                 ids,ide, jds,jde, kds,kde,         &
-                 ims,ime, jms,jme, kms,kme,         &
-                 its,ite, jts,jte, kts,kte,         &
-!ckay
-                 cldfra_dp_KF,cldfra_sh_KF,         &
-                 qc_KF,qi_KF,                       &
-!kf_edrates
-                 UDR_KF,DDR_KF,                     &
-                 UER_KF,DER_KF,                     &
-                 TIMEC_KF,KF_EDRATES,               & 
-!LTNG
-                 ltg_status,suppress                )
-            ELSEIF(suppress.EQ.1 .AND. ltg_status==.TRUE.)THEN
-! LTNG  Suppress = 1 is full suppression.
-!       So, only call KF_eta_PARA if lightning is present
+                    CALL KF_eta_PARA(I, J,                  &
+                        U1D,V1D,T1D,QV1D,P1D,DZ1D,W0AVG1D, &
+                        tpart_h1D,tpart_v1D,               &
+                        trigger,                           &
+                        DT,DX,DXSQ,RHO1D,                  &
+                        XLV0,XLV1,XLS0,XLS1,CP,R,G,        &
+                        EP2,SVP1,SVP2,SVP3,SVPT0,          &
+                        DQDT,DQIDT,DQCDT,DQRDT,DQSDT,DTDT, &
+                        RAINCV,PRATEC,NCA,                 &
+                        flag_QI,flag_QS,warm_rain,         &
+                        CUTOP,CUBOT,ishall,CUDT,           & !BSINGH -  Added ishall as arg for WRFCuP
+                        ids,ide, jds,jde, kds,kde,         &
+                        ims,ime, jms,jme, kms,kme,         &
+                        its,ite, jts,jte, kts,kte,         &
+                        !ckay
+                        cldfra_dp_KF,cldfra_sh_KF,         &
+                        qc_KF,qi_KF,                       &
+                        !kf_edrates
+                        UDR_KF,DDR_KF,                     &
+                        UER_KF,DER_KF,                     &
+                        TIMEC_KF,KF_EDRATES,               & 
+                        !LTNG
+                        ltg_status,suppress                )
+                ELSEIF(suppress.EQ.1 .AND. ltg_status==.TRUE.)THEN
+                ! LTNG  Suppress = 1 is full suppression.
+                !       So, only call KF_eta_PARA if lightning is present
 
-            CALL KF_eta_PARA(I, J,                  &
-                 U1D,V1D,T1D,QV1D,P1D,DZ1D,W0AVG1D, &
-                 tpart_h1D,tpart_v1D,               &
-                 trigger,                           &
-                 DT,DX,DXSQ,RHO1D,                  &
-                 XLV0,XLV1,XLS0,XLS1,CP,R,G,        &
-                 EP2,SVP1,SVP2,SVP3,SVPT0,          &
-                 DQDT,DQIDT,DQCDT,DQRDT,DQSDT,DTDT, &
-                 RAINCV,PRATEC,NCA,                 &
-                 flag_QI,flag_QS,warm_rain,         &
-                 CUTOP,CUBOT,ishall,CUDT,           & !BSINGH -  Added ishall as arg for WRFCuP
-                 ids,ide, jds,jde, kds,kde,         &
-                 ims,ime, jms,jme, kms,kme,         &
-                 its,ite, jts,jte, kts,kte,         &
-!ckay
-                 cldfra_dp_KF,cldfra_sh_KF,         &
-                 qc_KF,qi_KF,                       &
-!kf_edrates
-                 UDR_KF,DDR_KF,                     &
-                 UER_KF,DER_KF,                     &
-                 TIMEC_KF,KF_EDRATES,               &
-!LTNG
-                 ltg_status,suppress                )
-             ENDIF ! for ltg_assim == .true.
+                    CALL KF_eta_PARA(I, J,                  &
+                        U1D,V1D,T1D,QV1D,P1D,DZ1D,W0AVG1D, &
+                        tpart_h1D,tpart_v1D,               &
+                        trigger,                           &
+                        DT,DX,DXSQ,RHO1D,                  &
+                        XLV0,XLV1,XLS0,XLS1,CP,R,G,        &
+                        EP2,SVP1,SVP2,SVP3,SVPT0,          &
+                        DQDT,DQIDT,DQCDT,DQRDT,DQSDT,DTDT, &
+                        RAINCV,PRATEC,NCA,                 &
+                        flag_QI,flag_QS,warm_rain,         &
+                        CUTOP,CUBOT,ishall,CUDT,           & !BSINGH -  Added ishall as arg for WRFCuP
+                        ids,ide, jds,jde, kds,kde,         &
+                        ims,ime, jms,jme, kms,kme,         &
+                        its,ite, jts,jte, kts,kte,         &
+                        !ckay
+                        cldfra_dp_KF,cldfra_sh_KF,         &
+                        qc_KF,qi_KF,                       &
+                        !kf_edrates
+                        UDR_KF,DDR_KF,                     &
+                        UER_KF,DER_KF,                     &
+                        TIMEC_KF,KF_EDRATES,               &
+                        !LTNG
+                        ltg_status,suppress                )
+                ENDIF ! for ltg_assim == .true.
             ELSE ! IF ( ltg_assim ) -- No LTG assimilation being used, so call KF as usual
 
 
-            CALL KF_eta_PARA(I, J,                  &
-                 U1D,V1D,T1D,QV1D,P1D,DZ1D,W0AVG1D, &
-                 tpart_h1D,tpart_v1D,               &
-                 trigger,                           &
-                 DT,DX,DXSQ,RHO1D,                  &
-                 XLV0,XLV1,XLS0,XLS1,CP,R,G,        &
-                 EP2,SVP1,SVP2,SVP3,SVPT0,          &
-                 DQDT,DQIDT,DQCDT,DQRDT,DQSDT,DTDT, &
-                 RAINCV,PRATEC,NCA,                 &
-                 flag_QI,flag_QS,warm_rain,         &
-                 CUTOP,CUBOT,ishall,CUDT,           & !BSINGH -  Added ishall as arg for WRFCuP
-                 ids,ide, jds,jde, kds,kde,         &
-                 ims,ime, jms,jme, kms,kme,         &
-                 its,ite, jts,jte, kts,kte,         &
-!ckay
-                 cldfra_dp_KF,cldfra_sh_KF,         &
-                 qc_KF,qi_KF,                       &
-!kf_edrates
-                 UDR_KF,DDR_KF,                     &
-                 UER_KF,DER_KF,                     &
-                 TIMEC_KF,KF_EDRATES,               &
-!LTNG
-                 ltg_status,suppress                )
+                CALL KF_eta_PARA(I, J,                  &
+                    U1D,V1D,T1D,QV1D,P1D,DZ1D,W0AVG1D, &
+                    tpart_h1D,tpart_v1D,               &
+                    trigger,                           &
+                    DT,DX,DXSQ,RHO1D,                  &
+                    XLV0,XLV1,XLS0,XLS1,CP,R,G,        &
+                    EP2,SVP1,SVP2,SVP3,SVPT0,          &
+                    DQDT,DQIDT,DQCDT,DQRDT,DQSDT,DTDT, &
+                    RAINCV,PRATEC,NCA,                 &
+                    flag_QI,flag_QS,warm_rain,         &
+                    CUTOP,CUBOT,ishall,CUDT,           & !BSINGH -  Added ishall as arg for WRFCuP
+                    ids,ide, jds,jde, kds,kde,         &
+                    ims,ime, jms,jme, kms,kme,         &
+                    its,ite, jts,jte, kts,kte,         &
+                    !ckay
+                    cldfra_dp_KF,cldfra_sh_KF,         &
+                    qc_KF,qi_KF,                       &
+                    !kf_edrates
+                    UDR_KF,DDR_KF,                     &
+                    UER_KF,DER_KF,                     &
+                    TIMEC_KF,KF_EDRATES,               &
+                    !LTNG
+                    ltg_status,suppress                )
 
             ENDIF ! IF ( ltg_assim )
 
@@ -1306,9 +1306,11 @@ trigger2:  IF(TLCL+DTLCL+DTRH.LT.TENV .AND. ltg_status==.false.)THEN
 !...
 !...ESTIMATE INITIAL UPDRAFT MASS FLUX (UMF(K))...
 !     
-            WU(K)=WLCL
-            AU0=0.01*DXSQ
-            UMF(K)=RHOLCL*AU0
+            WU(K)=WLCL  !m/s, initial parcel velocity
+            AU0=0.01*DXSQ ! DXSQ = DX*DX m2; what is 0.01?
+            !UMF is a mass flux, so needs units kg s-1 (per Kain 2003)
+            UMF(K)=RHOLCL*AU0   !but these are kg m-3 m2 * whatever 0.01 is
+                                !...it has to be units of m s-1, so must be assuming WU = 0.01 m/s
             VMFLCL=UMF(K)
             UPOLD=VMFLCL
             UPNEW=UPOLD
