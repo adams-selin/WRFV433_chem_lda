@@ -1321,7 +1321,7 @@ trigger2:  IF(TLCL+DTLCL+DTRH.LT.TENV .AND. ltg_status==.false.)THEN
 !...PRODUCTION...
 !     
             RATIO2(K)=0.
-            UER(K)=0.
+            UER(K)=0. !Environmental entrainment rate
             ABE=0.
             TRPPT=0.
             TU(K)=TLCL
