@@ -1401,7 +1401,7 @@ updraft:    DO NK=K,KL-1
 !
 !  CALCULATE UPDRAFT VERTICAL VELOCITY AND PRECIPITATION FALLOUT...
 !
-              IF(NK.EQ.K)THEN
+              IF(NK.EQ.K)THEN !if at model level below LCL (K = KLCL-1)
                 BE=(TVLCL+TVU(NK1))/(TVEN+TV0(NK1))-1.
                 BOTERM=2.*(Z0(NK1)-ZLCL)*G*BE/1.5
                 DZZ=Z0(NK1)-ZLCL
@@ -1441,6 +1441,7 @@ updraft:    DO NK=K,KL-1
 !...REI IS THE RATE OF ENVIRONMENTAL INFLOW...
 !
               REI=VMFLCL*DP(NK1)*0.03/RAD          !    KF (1990) Eq. 1; Kain (2004) Eq. 5
+              !TVQU - virtual temperature, accounting moisture removed by fallout
               TVQU(NK1)=TU(NK1)*(1.+0.608*QU(NK1)-QLIQ(NK1)-QICE(NK1))
               IF(NK.EQ.K)THEN
                 DILBE=((TVLCL+TVQU(NK1))/(TVEN+TV0(NK1))-1.)*DZZ
