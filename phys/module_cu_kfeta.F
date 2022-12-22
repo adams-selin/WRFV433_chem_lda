@@ -1516,7 +1516,7 @@ updraft:    DO NK=K,KL-1
 !...NET ENTRAINMENT AND DETRAINMENT RATES ARE GIVEN BY THE AVERAGE FRACTIONAL
 !   VALUES IN THE LAYER...
 !
-              EE2 = AMAX1(EE2,0.5)
+              EE2 = AMAX1(EE2,0.5)  !EE2 needs to be at least 0.5
               UD2 = 1.5*UD2
               UER(NK1)=0.5*REI*(EE1+EE2)  !What is EE1?
               UDR(NK1)=0.5*REI*(UD1+UD2)
