@@ -1465,14 +1465,14 @@ updraft:    DO NK=K,KL-1
 !
                 F1=0.95
                 F2=1.-F1
-                THTTMP=F1*THETEE(NK1)+F2*THETEU(NK1)
-                QTMP=F1*Q0(NK1)+F2*QU(NK1)
-                TMPLIQ=F2*QLIQ(NK1)
+                THTTMP=F1*THETEE(NK1)+F2*THETEU(NK1) !combine parcel and mostly environmental air
+                QTMP=F1*Q0(NK1)+F2*QU(NK1) !combine parcel and mostly environmental moisture
+                TMPLIQ=F2*QLIQ(NK1) !same with liquid, ice that is being carried with parcel
                 TMPICE=F2*QICE(NK1)
                 call tpmix2(p0(nk1),thttmp,ttmp,qtmp,tmpliq,tmpice,        &
-                           qnewlq,qnewic,XLV1,XLV0)
-                TU95=TTMP*(1.+0.608*QTMP-TMPLIQ-TMPICE)
-                IF(TU95.GT.TV0(NK1))THEN
+                           qnewlq,qnewic,XLV1,XLV0)  !take care of any saturation or evaporation
+                TU95=TTMP*(1.+0.608*QTMP-TMPLIQ-TMPICE) !virtual temperature
+                IF(TU95.GT.TV0(NK1))THEN  !If new virtual temperature > environment tv
                   EE2=1.
                   UD2=0.
                   EQFRC(NK1)=1.0
@@ -1518,7 +1518,7 @@ updraft:    DO NK=K,KL-1
 !
               EE2 = AMAX1(EE2,0.5)
               UD2 = 1.5*UD2
-              UER(NK1)=0.5*REI*(EE1+EE2)
+              UER(NK1)=0.5*REI*(EE1+EE2)  !What is EE1?
               UDR(NK1)=0.5*REI*(UD1+UD2)
 !LTNG
 !...If parcel isn't buoyant but lightning is present, turn off entrainment and
