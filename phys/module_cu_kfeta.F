@@ -73,6 +73,7 @@ CONTAINS
 !kf_edrates
              ,UDR_KF,DDR_KF                                  &
              ,UER_KF,DER_KF                                  &
+             ,REI_KF,UMF_KF                                  & !RAS LTNG
              ,TIMEC_KF,KF_EDRATES                            &
 !LTNG
              ,XLONG,XLAT,XLONG_U,XLAT_V,LNT                  &
@@ -201,7 +202,9 @@ CONTAINS
                                                      UDR_KF, &
                                                      DDR_KF, &
                                                      UER_KF, &
-                                                     DER_KF
+                                                     DER_KF, &
+                                                     REI_KF, &
+                                                     UMF_KF  
 
    REAL,  DIMENSION( ims:ime , jms:jme )                   , &
           INTENT(INOUT) ::                         &
@@ -528,6 +531,8 @@ suppress=0
                   DDR_KF(I,k,J)=0.
                   UER_KF(I,k,J)=0.
                   DER_KF(I,k,J)=0.
+                  UMF_KF(I,k,J)=0.
+                  REI_KF(I,j,J)=0.
                ENDDO
                TIMEC_KF(I,J)=0.
             ENDIF
@@ -583,6 +588,7 @@ suppress=0
                         !kf_edrates
                         UDR_KF,DDR_KF,                     &
                         UER_KF,DER_KF,                     &
+                        UMF_KF,REI_KF,                     &
                         TIMEC_KF,KF_EDRATES,               & 
                         !LTNG
                         ltg_status,suppress                )
@@ -610,6 +616,7 @@ suppress=0
                         !kf_edrates
                         UDR_KF,DDR_KF,                     &
                         UER_KF,DER_KF,                     &
+                        UMF_KF,REI_KF,                     &
                         TIMEC_KF,KF_EDRATES,               &
                         !LTNG
                         ltg_status,suppress                )
@@ -637,6 +644,7 @@ suppress=0
                     !kf_edrates
                     UDR_KF,DDR_KF,                     &
                     UER_KF,DER_KF,                     &
+                    UMF_KF,REI_KF,                     &
                     TIMEC_KF,KF_EDRATES,               &
                     !LTNG
                     ltg_status,suppress                )
@@ -715,6 +723,7 @@ suppress=0
 !kf_edrates
                       UDR_KF,DDR_KF,                       &
                       UER_KF,DER_KF,                       &
+                      UMF_KF,REI_KF,                       &
                       TIMEC_KF,KF_EDRATES,                 & 
 !LTNG
                       ltg_status,suppress                  )
@@ -783,7 +792,9 @@ suppress=0
             INTENT(INOUT) ::       UDR_KF,       &
                                              DDR_KF,       &
                                              UER_KF,       &
-                                             DER_KF
+                                             DER_KF,       &
+                                             UMF_KF,       &
+                                             REI_KF    
 
       REAL, DIMENSION( ims:ime , jms:jme ),                &
             INTENT(INOUT) ::     TIMEC_KF
@@ -810,7 +821,7 @@ suppress=0
             UDR2,DMF2,DER2,DDR2,DZA,THTA0,THETEE,          &
             THTAU,THETEU,THTAD,THETED,QLIQ,QICE,           &
             QLQOUT,QICOUT,PPTLIQ,PPTICE,DETLQ,DETIC,       &
-            DETLQ2,DETIC2,RATIO,RATIO2
+            DETLQ2,DETIC2,RATIO,RATIO2,REI_1D
 
 
       REAL, DIMENSION( kts:kte ) ::                        &
@@ -1518,9 +1529,13 @@ updraft:    DO NK=K,KL-1
 !
               EE2 = AMAX1(EE2,0.5)  !EE2 needs to be at least 0.5
               UD2 = 1.5*UD2
-              UER(NK1)=0.5*REI*(EE1+EE2)  !What is EE1?
+              UER(NK1)=0.5*REI*(EE1+EE2)  !EE1, EE2 = fraction of entrained parcels in layer
               UDR(NK1)=0.5*REI*(UD1+UD2)
-!LTNG
+
+!LTNG RAS - extra entrainment output
+              REI_1D(NK1) = REI
+
+              !LTNG
 !...If parcel isn't buoyant but lightning is present, turn off entrainment and
 !...detrainment completely (Mansell et al. 2007)...
 !
@@ -2664,6 +2679,8 @@ iter:     DO NCOUNT=1,10
              DDR_KF(I,NK,J)=DDR(NK)
              UER_KF(I,NK,J)=UER(NK)
              DER_KF(I,NK,J)=DER(NK)
+             REI_KF(I,NK,J)=REI_1D(NK)
+             UMF_KF(I,NK,J)=UMF(NK)
            ENDDO
         ENDIF
 !     
