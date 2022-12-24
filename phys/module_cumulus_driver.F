@@ -22,7 +22,7 @@ CONTAINS
                      ,rainc,raincv,pratec,nca                         &
                      ,cldfra_dp,cldfra_sh                             &
                      ,udr_kf,ddr_kf,uer_kf,der_kf,timec_kf            & 
-                     ,rei_kf, umf_kf, kf_edrates                      & !kf_edrates
+                     ,rei_kf, umf_kf, iterf_kf, kf_edrates            & !kf_edrates
                      ,QC_CU,QI_CU                                     &
                      ,z,z_at_w,dz8w,mavail,pblh,p8w,psfc,tsk          &
                      ,tke_pbl, ust                                    &
