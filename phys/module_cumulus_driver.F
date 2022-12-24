@@ -493,7 +493,11 @@ CONTAINS
                                                     , rei_kf       
 
    REAL,  DIMENSION( ims:ime , jms:jme ), INTENT(INOUT) ::        &
-          timec_kf, iterf_kf
+          timec_kf
+
+   !RAS LTNG
+   INTEGER,  DIMENSION( ims:ime , jms:jme ), INTENT(INOUT) ::      &
+    iterf_kf
 
    INTEGER, INTENT(IN   )        ::   kf_edrates
 

@@ -1,8 +1,8 @@
 # Implementation of Entrainment Changes
 
-For information, see [[https://www2.mmm.ucar.edu/wrf/users/docs/user_guide_v4/v4.4/users_guide_chap5.html#runtimeio]]
+For information, see https://www2.mmm.ucar.edu/wrf/users/docs/user_guide_v4/v4.4/users_guide_chap5.html#runtimeio
 
-Adding the following changes below will produce a "entrain_d0<domain>_<date>" file for each domain and every 5 minutes (`aux_hist7_interval`) containing a range of entrainment-related information:
+Adding the following changes below will produce a `entrain_d0<domain>_<date>` file for each domain and every 5 minutes (`aux_hist7_interval`) containing a range of entrainment-related information:
 - REI_KF, rate of environmental inflow (kg s-1)
 - UER_KF, net updraft entrainment rate (kg s-1)
 - UDR_KF, net updraft detrainment rate (kg s-1)

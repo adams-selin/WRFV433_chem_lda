@@ -208,8 +208,11 @@ CONTAINS
 
    REAL,  DIMENSION( ims:ime , jms:jme )                   , &
           INTENT(INOUT) ::                         &
-                                        TIMEC_KF, ITERF_KF
+                                        TIMEC_KF
 
+   INTEGER,  DIMENSION( ims:ime , jms:jme )                   , &
+   INTENT(INOUT) ::                         &
+                                ITERF_KF
    INTEGER, INTENT(IN) ::              KF_EDRATES
 
 ! LOCAL VARS
@@ -798,7 +801,11 @@ suppress=0
                                              REI_KF    
 
       REAL, DIMENSION( ims:ime , jms:jme ),                &
-            INTENT(INOUT) ::     TIMEC_KF, ITERF_KF
+            INTENT(INOUT) ::     TIMEC_KF
+
+      INTEGER, DIMENSION( ims:ime , jms:jme ),                &
+      INTENT(INOUT) ::     ITERF_KF
+
 
       INTEGER, INTENT(IN) ::         KF_EDRATES
 

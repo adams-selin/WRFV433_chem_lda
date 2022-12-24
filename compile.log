@@ -2,7 +2,7 @@
 ============================================================================================== 
  
 V4.3.3
-git commit 10aefa0378bd0a64bc830c5a405386c4ed614fa7 2 files changed, 3 insertions(+), 3 deletions(-)
+git commit eb0958ac4b2e4a13f7108c66339b7f3c1dae24e7 6 files changed, 17 insertions(+), 494 deletions(-)
  
 Compiling: WRF_EM_CORE  
  
@@ -227,6 +227,31 @@ if [ 0 -eq 1 ] ; then \
                                    module_diag_afwa.o module_diag_cl.o module_diag_functions.o module_diag_hailcast.o module_diag_misc.o module_diag_nwp.o module_diag_rasm.o module_diag_pld.o module_diag_zld.o module_diag_trad_fields.o module_diag_solar.o  ; \
                 fi
 make[3]: Entering directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys'
+rm -f module_cu_kfeta.o
+sed -e "s/^\!.*'.*//" -e "s/^ *\!.*'.*//" module_cu_kfeta.F > module_cu_kfeta.G
+/lib/cpp -P -nostdinc -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -DEM_CORE=1 -DNMM_CORE=0 -DNMM_MAX_DIM=2600 -DDA_CORE=0 -DWRFPLUS=0 -DIWORDSIZE=4 -DDWORDSIZE=8 -DRWORDSIZE=4 -DLWORDSIZE=4 -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT -DRPC_TYPES=2  -DDM_PARALLEL -DNETCDF -DLANDREAD_STUB=1 -DUSE_ALLOCATABLES -Dwrfmodel -DGRIB1 -DINTIO -DKEEP_INT_AROUND -DLIMIT_ARGS -DBUILD_RRTMG_FAST=0 -DBUILD_RRTMK=0 -DBUILD_SBM_FAST=1 -DSHOW_ALL_VARS_USED=0 -DCONFIG_BUF_LEN=65536 -DMAX_DOMAINS_F=21 -DMAX_HISTORY=25 -DNMM_NEST=0 -DWRF_CHEM -DBUILD_CHEM=1 -I. -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT   module_cu_kfeta.G  > module_cu_kfeta.bb
+/gpfs/home/rselin_aer_com/WRFV433_chem_lda/tools/standard.exe module_cu_kfeta.bb | /lib/cpp -P -nostdinc -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT > module_cu_kfeta.f90
+rm -f module_cu_kfeta.G module_cu_kfeta.bb
+time mpif90 -f90=ifort -o module_cu_kfeta.o -c -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian    -I../dyn_em -I../dyn_nmm  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/share -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/wrftladj -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/chem -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -I/gpfs/home/rselin_aer_com/netcdf/include  -real-size `expr 8 \* 4` -i4  module_cu_kfeta.f90
+
+real	0m12.711s
+user	0m11.608s
+sys	0m0.290s
+rm -f module_physics_addtendc.o
+rm -f module_physics_init.o
+/lib/cpp -P -nostdinc -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -DEM_CORE=1 -DNMM_CORE=0 -DNMM_MAX_DIM=2600 -DDA_CORE=0 -DWRFPLUS=0 -DIWORDSIZE=4 -DDWORDSIZE=8 -DRWORDSIZE=4 -DLWORDSIZE=4 -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT -DRPC_TYPES=2  -DDM_PARALLEL -DNETCDF -DLANDREAD_STUB=1 -DUSE_ALLOCATABLES -Dwrfmodel -DGRIB1 -DINTIO -DKEEP_INT_AROUND -DLIMIT_ARGS -DBUILD_RRTMG_FAST=0 -DBUILD_RRTMK=0 -DBUILD_SBM_FAST=1 -DSHOW_ALL_VARS_USED=0 -DCONFIG_BUF_LEN=65536 -DMAX_DOMAINS_F=21 -DMAX_HISTORY=25 -DNMM_NEST=0 -DWRF_CHEM -DBUILD_CHEM=1 -I. -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT   module_physics_init.F  > module_physics_init.bb
+sed -e "s/^\!.*'.*//" -e "s/^ *\!.*'.*//" module_physics_addtendc.F > module_physics_addtendc.G
+/lib/cpp -P -nostdinc -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -DEM_CORE=1 -DNMM_CORE=0 -DNMM_MAX_DIM=2600 -DDA_CORE=0 -DWRFPLUS=0 -DIWORDSIZE=4 -DDWORDSIZE=8 -DRWORDSIZE=4 -DLWORDSIZE=4 -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT -DRPC_TYPES=2  -DDM_PARALLEL -DNETCDF -DLANDREAD_STUB=1 -DUSE_ALLOCATABLES -Dwrfmodel -DGRIB1 -DINTIO -DKEEP_INT_AROUND -DLIMIT_ARGS -DBUILD_RRTMG_FAST=0 -DBUILD_RRTMK=0 -DBUILD_SBM_FAST=1 -DSHOW_ALL_VARS_USED=0 -DCONFIG_BUF_LEN=65536 -DMAX_DOMAINS_F=21 -DMAX_HISTORY=25 -DNMM_NEST=0 -DWRF_CHEM -DBUILD_CHEM=1 -I. -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT   module_physics_addtendc.G  > module_physics_addtendc.bb
+/gpfs/home/rselin_aer_com/WRFV433_chem_lda/tools/standard.exe module_physics_addtendc.bb | /lib/cpp -P -nostdinc -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT > module_physics_addtendc.f90
+/gpfs/home/rselin_aer_com/WRFV433_chem_lda/tools/standard.exe module_physics_init.bb | /lib/cpp -P -nostdinc -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT > module_physics_init.f90
+rm -f module_physics_addtendc.G module_physics_addtendc.bb
+time mpif90 -f90=ifort -o module_physics_addtendc.o -c -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian    -I../dyn_em -I../dyn_nmm  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/share -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/wrftladj -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/chem -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -I/gpfs/home/rselin_aer_com/netcdf/include  -real-size `expr 8 \* 4` -i4  module_physics_addtendc.f90
+rm -f module_physics_init.b module_physics_init.bb
+time mpif90 -f90=ifort -c -real-size `expr 8 \* 4` -i4  -O0 -fno-inline -no-ip -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian   -I../dyn_em -I../dyn_nmm  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/share -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/wrftladj -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/chem -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -I/gpfs/home/rselin_aer_com/netcdf/include  module_physics_init.f90
+
+real	0m4.722s
+user	0m2.269s
+sys	0m0.259s
 rm -f module_cumulus_driver.o
 sed -e "s/^\!.*'.*//" -e "s/^ *\!.*'.*//" module_cumulus_driver.F > module_cumulus_driver.G
 /lib/cpp -P -nostdinc -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -DEM_CORE=1 -DNMM_CORE=0 -DNMM_MAX_DIM=2600 -DDA_CORE=0 -DWRFPLUS=0 -DIWORDSIZE=4 -DDWORDSIZE=8 -DRWORDSIZE=4 -DLWORDSIZE=4 -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT -DRPC_TYPES=2  -DDM_PARALLEL -DNETCDF -DLANDREAD_STUB=1 -DUSE_ALLOCATABLES -Dwrfmodel -DGRIB1 -DINTIO -DKEEP_INT_AROUND -DLIMIT_ARGS -DBUILD_RRTMG_FAST=0 -DBUILD_RRTMK=0 -DBUILD_SBM_FAST=1 -DSHOW_ALL_VARS_USED=0 -DCONFIG_BUF_LEN=65536 -DMAX_DOMAINS_F=21 -DMAX_HISTORY=25 -DNMM_NEST=0 -DWRF_CHEM -DBUILD_CHEM=1 -I. -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT   module_cumulus_driver.G  > module_cumulus_driver.bb
@@ -234,9 +259,13 @@ sed -e "s/^\!.*'.*//" -e "s/^ *\!.*'.*//" module_cumulus_driver.F > module_cumul
 rm -f module_cumulus_driver.G module_cumulus_driver.bb
 time mpif90 -f90=ifort -o module_cumulus_driver.o -c -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian    -I../dyn_em -I../dyn_nmm  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/share -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/wrftladj -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/chem -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -I/gpfs/home/rselin_aer_com/netcdf/include  -real-size `expr 8 \* 4` -i4  module_cumulus_driver.f90
 
-real	0m6.290s
-user	0m2.995s
-sys	0m0.900s
+real	0m5.577s
+user	0m5.217s
+sys	0m0.182s
+
+real	0m5.049s
+user	0m3.042s
+sys	0m0.846s
 make[3]: Leaving directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys'
 make[2]: Leaving directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys'
 make[1]: Leaving directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda'
@@ -267,14 +296,20 @@ fi
 make[2]: Entering directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/dyn_em'
 rm -f module_first_rk_step_part1.o
 sed -e "s/^\!.*'.*//" -e "s/^ *\!.*'.*//" module_first_rk_step_part1.F > module_first_rk_step_part1.G
+rm -f start_em.o
+sed -e "s/^\!.*'.*//" -e "s/^ *\!.*'.*//" start_em.F > start_em.G
 /lib/cpp -P -nostdinc -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -DEM_CORE=1 -DNMM_CORE=0 -DNMM_MAX_DIM=2600 -DDA_CORE=0 -DWRFPLUS=0 -DIWORDSIZE=4 -DDWORDSIZE=8 -DRWORDSIZE=4 -DLWORDSIZE=4 -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT -DRPC_TYPES=2  -DDM_PARALLEL -DNETCDF -DLANDREAD_STUB=1 -DUSE_ALLOCATABLES -Dwrfmodel -DGRIB1 -DINTIO -DKEEP_INT_AROUND -DLIMIT_ARGS -DBUILD_RRTMG_FAST=0 -DBUILD_RRTMK=0 -DBUILD_SBM_FAST=1 -DSHOW_ALL_VARS_USED=0 -DCONFIG_BUF_LEN=65536 -DMAX_DOMAINS_F=21 -DMAX_HISTORY=25 -DNMM_NEST=0 -DWRF_CHEM -DBUILD_CHEM=1 -I. -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT   module_first_rk_step_part1.G  > module_first_rk_step_part1.bb
+/lib/cpp -P -nostdinc -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -DEM_CORE=1 -DNMM_CORE=0 -DNMM_MAX_DIM=2600 -DDA_CORE=0 -DWRFPLUS=0 -DIWORDSIZE=4 -DDWORDSIZE=8 -DRWORDSIZE=4 -DLWORDSIZE=4 -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT -DRPC_TYPES=2  -DDM_PARALLEL -DNETCDF -DLANDREAD_STUB=1 -DUSE_ALLOCATABLES -Dwrfmodel -DGRIB1 -DINTIO -DKEEP_INT_AROUND -DLIMIT_ARGS -DBUILD_RRTMG_FAST=0 -DBUILD_RRTMK=0 -DBUILD_SBM_FAST=1 -DSHOW_ALL_VARS_USED=0 -DCONFIG_BUF_LEN=65536 -DMAX_DOMAINS_F=21 -DMAX_HISTORY=25 -DNMM_NEST=0 -DWRF_CHEM -DBUILD_CHEM=1 -I. -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT   start_em.G  > start_em.bb
 /gpfs/home/rselin_aer_com/WRFV433_chem_lda/tools/standard.exe module_first_rk_step_part1.bb | /lib/cpp -P -nostdinc -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT > module_first_rk_step_part1.f90
 rm -f module_first_rk_step_part1.G module_first_rk_step_part1.bb
+/gpfs/home/rselin_aer_com/WRFV433_chem_lda/tools/standard.exe start_em.bb | /lib/cpp -P -nostdinc -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT > start_em.f90
 time mpif90 -f90=ifort -o module_first_rk_step_part1.o -c -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian    -I../dyn_em -I../dyn_nmm  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/share -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/wrftladj -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/chem -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -I/gpfs/home/rselin_aer_com/netcdf/include  -real-size `expr 8 \* 4` -i4  module_first_rk_step_part1.f90
+rm -f start_em.G start_em.bb
+time mpif90 -f90=ifort -o start_em.o -c -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian    -I../dyn_em -I../dyn_nmm  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/share -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/wrftladj -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/chem -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -I/gpfs/home/rselin_aer_com/netcdf/include  -real-size `expr 8 \* 4` -i4  start_em.f90
 
-real	0m14.135s
-user	0m12.496s
-sys	0m1.202s
+real	0m15.329s
+user	0m13.561s
+sys	0m1.385s
 rm -f solve_em.o
 sed -e "s/^\!.*'.*//" -e "s/^ *\!.*'.*//" solve_em.F > solve_em.G
 /lib/cpp -P -nostdinc -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -DEM_CORE=1 -DNMM_CORE=0 -DNMM_MAX_DIM=2600 -DDA_CORE=0 -DWRFPLUS=0 -DIWORDSIZE=4 -DDWORDSIZE=8 -DRWORDSIZE=4 -DLWORDSIZE=4 -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT -DRPC_TYPES=2  -DDM_PARALLEL -DNETCDF -DLANDREAD_STUB=1 -DUSE_ALLOCATABLES -Dwrfmodel -DGRIB1 -DINTIO -DKEEP_INT_AROUND -DLIMIT_ARGS -DBUILD_RRTMG_FAST=0 -DBUILD_RRTMK=0 -DBUILD_SBM_FAST=1 -DSHOW_ALL_VARS_USED=0 -DCONFIG_BUF_LEN=65536 -DMAX_DOMAINS_F=21 -DMAX_HISTORY=25 -DNMM_NEST=0 -DWRF_CHEM -DBUILD_CHEM=1 -I. -traditional-cpp -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT   solve_em.G  > solve_em.bb
@@ -282,9 +317,13 @@ sed -e "s/^\!.*'.*//" -e "s/^ *\!.*'.*//" solve_em.F > solve_em.G
 rm -f solve_em.G solve_em.bb
 time mpif90 -f90=ifort -o solve_em.o -c -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian    -I../dyn_em -I../dyn_nmm  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/share -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/wrftladj -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/chem -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -I/gpfs/home/rselin_aer_com/netcdf/include  -real-size `expr 8 \* 4` -i4  solve_em.f90
 
-real	0m46.524s
-user	0m43.590s
-sys	0m2.057s
+real	0m25.946s
+user	0m23.074s
+sys	0m1.866s
+
+real	0m55.482s
+user	0m51.732s
+sys	0m3.067s
 ar ru ../main/libwrflib.a module_advect_em.o module_ieva_em.o module_diffusion_em.o module_small_step_em.o module_big_step_utilities_em.o module_em.o module_solvedebug_em.o module_bc_em.o module_init_utilities.o module_wps_io_arw.o module_damping_em.o module_polarfft.o module_force_scm.o module_first_rk_step_part1.o module_first_rk_step_part2.o module_avgflx_em.o module_sfs_nba.o module_convtrans_prep.o module_sfs_driver.o module_stoch.o module_after_all_rk_steps.o  init_modules_em.o solve_em.o start_em.o shift_domain_em.o couple_or_uncouple_em.o nest_init_utils.o adapt_timestep_em.o interp_domain_em.o
 make[2]: Leaving directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/dyn_em'
 make[1]: Leaving directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda'
@@ -294,8 +333,8 @@ if [ 0 -eq 1 ]   ; then make -i -r MODULE_DIRS="-I../dyn_em -I../dyn_nmm  -I/gpf
 make[1]: Entering directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main'
 ranlib  libwrflib.a
 time mpif90 -f90=ifort -o wrf.exe  -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian   -ip   wrf.o ../main/module_wrf_top.o libwrflib.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/fftpack/fftpack5/libfftpack.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_grib1/libio_grib1.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_grib_share/libio_grib_share.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int/libwrfio_int.a -L/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90 -lesmf_time /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/RSL_LITE/librsl_lite.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame/module_internal_header_util.o /gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame/pack_utils.o -L/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -lwrfio_nf -L/gpfs/home/rselin_aer_com/netcdf/lib -lnetcdff -lnetcdf              
-1.19user 0.67system 0:02.99elapsed 62%CPU (0avgtext+0avgdata 264724maxresident)k
-0inputs+80outputs (0major+79694minor)pagefaults 0swaps
+1.24user 0.68system 0:03.10elapsed 62%CPU (0avgtext+0avgdata 264480maxresident)k
+0inputs+80outputs (0major+79553minor)pagefaults 0swaps
 make[1]: Leaving directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main'
 ( cd run ; /bin/rm -f wrf.exe ; ln -s ../main/wrf.exe . )
 if [ 0 -eq 1 ] ; then \
@@ -305,21 +344,21 @@ if [ ! -f run/p3_lookupTable_1.dat-5.3-3momI ] ; then \
   ( cd run ; cp p3_lookupTable_1.dat-5.3-3momI.gz hold.gz ; \
     gunzip hold.gz ; mv hold p3_lookupTable_1.dat-5.3-3momI ) ; \
 fi
-build started:   Fri Dec 23 19:29:15 EST 2022
-build completed: Fri Dec 23 19:30:41 EST 2022
+build started:   Fri Dec 23 22:55:51 EST 2022
+build completed: Fri Dec 23 22:57:44 EST 2022
 --------------------------------------
 ( cd main ; make -i -r RLFLAGS="" MODULE_DIRS="-I../dyn_em -I../dyn_nmm  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90  -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/share -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/phys -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/wrftladj -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/chem -I/gpfs/home/rselin_aer_com/WRFV433_chem_lda/inc -I/gpfs/home/rselin_aer_com/netcdf/include " SOLVER=em IDEAL_CASE=real em_real )
 make[1]: Entering directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main'
 ranlib  libwrflib.a
 time mpif90 -f90=ifort -o ndown.exe  -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian   -ip   ndown_em.o  ../dyn_em/module_initialize_real.o libwrflib.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/fftpack/fftpack5/libfftpack.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_grib1/libio_grib1.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_grib_share/libio_grib_share.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int/libwrfio_int.a -L/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90 -lesmf_time /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/RSL_LITE/librsl_lite.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame/module_internal_header_util.o /gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame/pack_utils.o -L/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -lwrfio_nf -L/gpfs/home/rselin_aer_com/netcdf/lib -lnetcdff -lnetcdf             
-1.08user 0.59system 0:01.80elapsed 93%CPU (0avgtext+0avgdata 241680maxresident)k
-0inputs+80outputs (0major+75070minor)pagefaults 0swaps
+1.14user 0.57system 0:01.82elapsed 93%CPU (0avgtext+0avgdata 240972maxresident)k
+0inputs+80outputs (0major+76909minor)pagefaults 0swaps
 time mpif90 -f90=ifort -o tc.exe  -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian   -ip   tc_em.o  ../dyn_em/module_initialize_real.o libwrflib.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/fftpack/fftpack5/libfftpack.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_grib1/libio_grib1.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_grib_share/libio_grib_share.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int/libwrfio_int.a -L/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90 -lesmf_time /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/RSL_LITE/librsl_lite.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame/module_internal_header_util.o /gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame/pack_utils.o -L/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -lwrfio_nf -L/gpfs/home/rselin_aer_com/netcdf/lib -lnetcdff -lnetcdf             
-1.10user 0.52system 0:01.73elapsed 94%CPU (0avgtext+0avgdata 240532maxresident)k
-0inputs+80outputs (0major+75996minor)pagefaults 0swaps
+1.11user 0.50system 0:01.79elapsed 90%CPU (0avgtext+0avgdata 237896maxresident)k
+0inputs+80outputs (0major+73024minor)pagefaults 0swaps
 time mpif90 -f90=ifort -o real.exe  -O3 -ip -fp-model precise -w -ftz -align all -fno-alias -FR -convert big_endian   -ip   real_em.o ../dyn_em/module_initialize_real.o libwrflib.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/fftpack/fftpack5/libfftpack.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_grib1/libio_grib1.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_grib_share/libio_grib_share.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_int/libwrfio_int.a -L/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/esmf_time_f90 -lesmf_time /gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/RSL_LITE/librsl_lite.a /gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame/module_internal_header_util.o /gpfs/home/rselin_aer_com/WRFV433_chem_lda/frame/pack_utils.o -L/gpfs/home/rselin_aer_com/WRFV433_chem_lda/external/io_netcdf -lwrfio_nf -L/gpfs/home/rselin_aer_com/netcdf/lib -lnetcdff -lnetcdf             
-1.08user 0.53system 0:01.76elapsed 91%CPU (0avgtext+0avgdata 241152maxresident)k
-0inputs+80outputs (0major+74225minor)pagefaults 0swaps
+1.20user 0.57system 0:01.99elapsed 88%CPU (0avgtext+0avgdata 240652maxresident)k
+0inputs+80outputs (0major+76803minor)pagefaults 0swaps
 make[1]: Leaving directory '/gpfs/home/rselin_aer_com/WRFV433_chem_lda/main'
 ( cd test/em_real ; /bin/rm -f wrf.exe ; ln -s ../../main/wrf.exe . )
 if [ 0 -eq 1 ] ; then \
@@ -474,15 +513,15 @@ fi
 	/bin/rm -f namelist.input ; cp ../test/em_real/namelist.input . )
  
 ==========================================================================
-build started:   Fri Dec 23 19:29:15 EST 2022
-build completed: Fri Dec 23 19:30:48 EST 2022
+build started:   Fri Dec 23 22:55:51 EST 2022
+build completed: Fri Dec 23 22:57:50 EST 2022
  
 --->                  Executables successfully built                  <---
  
--rwxrwxr-x 1 rselin_aer_com rselin_aer_com 73884776 Dec 23 19:30 main/ndown.exe
--rwxrwxr-x 1 rselin_aer_com rselin_aer_com 73822072 Dec 23 19:30 main/real.exe
--rwxrwxr-x 1 rselin_aer_com rselin_aer_com 72904824 Dec 23 19:30 main/tc.exe
--rwxrwxr-x 1 rselin_aer_com rselin_aer_com 81342880 Dec 23 19:30 main/wrf.exe
+-rwxrwxr-x 1 rselin_aer_com rselin_aer_com 73889400 Dec 23 22:57 main/ndown.exe
+-rwxrwxr-x 1 rselin_aer_com rselin_aer_com 73826696 Dec 23 22:57 main/real.exe
+-rwxrwxr-x 1 rselin_aer_com rselin_aer_com 72909448 Dec 23 22:57 main/tc.exe
+-rwxrwxr-x 1 rselin_aer_com rselin_aer_com 81347504 Dec 23 22:57 main/wrf.exe
  
 ==========================================================================
  
