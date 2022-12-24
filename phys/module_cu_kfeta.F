@@ -73,7 +73,7 @@ CONTAINS
 !kf_edrates
              ,UDR_KF,DDR_KF                                  &
              ,UER_KF,DER_KF                                  &
-             ,REI_KF,UMF_KF                                  & !RAS LTNG
+             ,REI_KF,UMF_KF,ITERF_KF                         & !RAS LTNG
              ,TIMEC_KF,KF_EDRATES                            &
 !LTNG
              ,XLONG,XLAT,XLONG_U,XLAT_V,LNT                  &
@@ -208,7 +208,7 @@ CONTAINS
 
    REAL,  DIMENSION( ims:ime , jms:jme )                   , &
           INTENT(INOUT) ::                         &
-                                                   TIMEC_KF
+                                        TIMEC_KF, ITERF_KF
 
    INTEGER, INTENT(IN) ::              KF_EDRATES
 
@@ -535,6 +535,7 @@ suppress=0
                   REI_KF(I,j,J)=0.
                ENDDO
                TIMEC_KF(I,J)=0.
+               ITERF_KF(I,J)=0.
             ENDIF
             RAINCV(I,J)=0.
             CUTOP(I,J)=KTS
@@ -588,7 +589,7 @@ suppress=0
                         !kf_edrates
                         UDR_KF,DDR_KF,                     &
                         UER_KF,DER_KF,                     &
-                        UMF_KF,REI_KF,                     &
+                        UMF_KF,REI_KF,ITERF_KF,            &
                         TIMEC_KF,KF_EDRATES,               & 
                         !LTNG
                         ltg_status,suppress                )
@@ -616,7 +617,7 @@ suppress=0
                         !kf_edrates
                         UDR_KF,DDR_KF,                     &
                         UER_KF,DER_KF,                     &
-                        UMF_KF,REI_KF,                     &
+                        UMF_KF,REI_KF,ITERF_KF,            &
                         TIMEC_KF,KF_EDRATES,               &
                         !LTNG
                         ltg_status,suppress                )
@@ -644,7 +645,7 @@ suppress=0
                     !kf_edrates
                     UDR_KF,DDR_KF,                     &
                     UER_KF,DER_KF,                     &
-                    UMF_KF,REI_KF,                     &
+                    UMF_KF,REI_KF,ITERF_KF,            &
                     TIMEC_KF,KF_EDRATES,               &
                     !LTNG
                     ltg_status,suppress                )
@@ -723,7 +724,7 @@ suppress=0
 !kf_edrates
                       UDR_KF,DDR_KF,                       &
                       UER_KF,DER_KF,                       &
-                      UMF_KF,REI_KF,                       &
+                      UMF_KF,REI_KF,ITERF_KF,            &
                       TIMEC_KF,KF_EDRATES,                 & 
 !LTNG
                       ltg_status,suppress                  )
@@ -797,7 +798,7 @@ suppress=0
                                              REI_KF    
 
       REAL, DIMENSION( ims:ime , jms:jme ),                &
-            INTENT(INOUT) ::     TIMEC_KF
+            INTENT(INOUT) ::     TIMEC_KF, ITERF_KF
 
       INTEGER, INTENT(IN) ::         KF_EDRATES
 
@@ -3075,6 +3076,9 @@ iter:     DO NCOUNT=1,10
 !
       CUTOP(I,J)=REAL(LTOP)
       CUBOT(I,J)=REAL(LCL)
+
+      !LTNG RAS iterf tracking
+      ITERF_KF(I,J) = iterf
 !
 !-----------------------------------------------------------------------
    END SUBROUTINE  KF_eta_PARA

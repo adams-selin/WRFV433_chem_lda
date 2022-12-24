@@ -490,10 +490,10 @@ CONTAINS
                                                     , uer_kf     &
                                                     , der_kf     &
                                                     , umf_kf     &
-                                                    , rei_kf     
+                                                    , rei_kf       
 
    REAL,  DIMENSION( ims:ime , jms:jme ), INTENT(INOUT) ::        &
-          timec_kf
+          timec_kf, iterf_kf
 
    INTEGER, INTENT(IN   )        ::   kf_edrates
 
@@ -1061,7 +1061,7 @@ CONTAINS
                ,QC_KF=QC_CU,QI_KF=QI_CU                         &
                ,UDR_KF=udr_kf,DDR_KF=ddr_kf                     & !kf_edrates
                ,UER_KF=uer_kf,DER_KF=der_kf                     & 
-               ,REI_KF=rei_kf,UMF_KF=umf_kf                     & !RAS LTNG
+               ,REI_KF=rei_kf,UMF_KF=umf_kf,ITERF_KF=iterf_kf   & !RAS LTNG
                ,TIMEC_KF=timec_kf,KF_EDRATES=kf_edrates         &
                ,XLONG=xlong,XLAT=xlat,XLONG_U=xlong_u           & !LTNG
                ,XLAT_V=xlat_v,LNT=lnt                           ) !LTNG
