@@ -24,8 +24,9 @@ frames_per_auxhist7 = 1,1,
 io_form_auxhist7 = 2
 
 &phys
-kf_edrates = 1, 1 (max_domain)
+kf_edrates = 1, 1 
 ```
+I'm assuming here you are running with 2 domains. If only running with one, only one entry is needed per line.
 
 ## output_file_d01.txt
 That file should contain the following line, only:
