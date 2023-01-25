@@ -1631,7 +1631,8 @@ CONTAINS
              ,XLONG=xlong,XLAT=xlat,XLONG_U=xlong_u             & !LTNG
              ,XLAT_V=xlat_v,LNT=lnt                             & !LTNG
              ,UER_LNT=uer_lnt,DER_LNT=der_lnt                   & !LTNG
-             ,UDR_LNT=udr_lnt,DDR_LNT=ddr_lnt                   ) !LTNG
+             ,UDR_LNT=udr_lnt,DDR_LNT=ddr_lnt                   & !LTNG
+             ,REI_KF=rei_kf,UMF_KF=umf_kf,ITERF_KF=iterf_kf     ) !RAS LTNG
         
         
         DO J = jts,jte

@@ -139,6 +139,7 @@ CONTAINS
              ,RQICUTEN,RQSCUTEN                              &
              ,XLONG,XLAT,XLONG_U,XLAT_V,LNT                  & !LTNG
              ,UDR_LNT,DDR_LNT,UER_LNT,DER_LNT                & !LTNG
+             ,REI_KF,UMF_KF,ITERF_KF, accum_kf_opt           & !RASLTNG
                                                              )
 !
    USE module_state_description, only:  num_chem
@@ -152,6 +153,10 @@ CONTAINS
                                         ai_phase, msectional, massptr_aer, numptr_aer, &
                                         dlo_sect, dhi_sect, dens_aer, hygro_aer, sigmag_aer
 #endif
+!RAS LTNG - add alarms so we can to reset accumulations after file output
+   USE module_domain, ONLY : domain_clock_get
+   USE module_model_constants
+
 
 !-------------------------------------------------------------
    IMPLICIT NONE
@@ -269,8 +274,14 @@ CONTAINS
                                                      UDR_LNT, &
                                                      DDR_LNT, &
                                                      UER_LNT, &
-                                                     DER_LNT
+                                                     DER_LNT, &
+                                                     REI_KF, &
+                                                     UMF_KF  
+   INTEGER,  DIMENSION( ims:ime , jms:jme )                   , &
+   INTENT(INOUT) ::                                 ITERF_KF
 
+   integer, intent(in) :: accum_kf_opt
+                                                  
 !LTNG  Local vars for defining bounds of grid box in Lat/Lon and time values
    REAL :: minlat,maxlat,minlon,maxlon
 ! Variables for calculating the most unstable layer, as done in Mansell et al.
@@ -288,6 +299,12 @@ CONTAINS
    LOGICAL :: ltg_status
    LOGICAL :: ltg_assim
    LOGICAL :: inbounds
+
+    ! Timing; RAS LTNG
+    ! ------
+   TYPE(WRFU_Time) :: hist_time, aux2_time, CurrTime, StartTime
+   TYPE(WRFU_TimeInterval) :: dtint, histint, aux2int
+   LOGICAL :: is_after_history_dump, is_output_timestep, is_first_timestep
 !LTNG - End
 
    LOGICAL, DIMENSION( ims:ime , jms:jme ),                  &
@@ -447,6 +464,29 @@ CALL nl_get_ltg_assim ( 1 , ltg_assim )
 ! is being checked falls within the NLDN data window...
 
 suppress=0
+
+!Add timing checks to see if it is after a history dump
+! Get timing info 
+! Want to know if when the last history output was
+! Check history and auxhist2 alarms to check last ring time and how often
+! they are set to ring
+! -----------------------------------------------------------------------
+CALL WRFU_ALARMGET( grid%alarms( HISTORY_ALARM ), prevringtime=hist_time, &
+    ringinterval=histint)
+CALL WRFU_ALARMGET( grid%alarms( AUXHIST2_ALARM ), prevringtime=aux2_time, &
+    ringinterval=aux2int)
+
+! Get domain clock
+! ----------------
+CALL domain_clock_get ( grid, current_time=CurrTime, &
+    simulationStartTime=StartTime, time_step=dtint )
+
+! Set some booleans for use later
+! Following uses an overloaded .lt.
+! ---------------------------------
+is_after_history_dump = ( Currtime .lt. hist_time + dtint )
+
+
 !LTNG - End
 
 
@@ -616,15 +656,31 @@ main_test_on_nca: &  ! rce 11-may-2012
                DQSDT(k)=0.
                DTDT(k)=0.
             ENDDO
-!LTNG
-            IF ( ltg_assim ) THEN
-               DO k=kts,kte
+!LTNG  - we want this value calculated even if LDA is off
+            !IF ( ltg_assim ) THEN
+!If accum_kf_opt namelist flag is on, reset only after a history dump
+    if ( accum_kf_opt /= 0 ) THEN
+        !That way we will accumulate entrainment values and mass flux over time.
+        IF ( is_after_history_dump ) THEN
+            DO k=kts,kte
                   UDR_LNT(I,k,J)=0.
                   DDR_LNT(I,k,J)=0.
                   UER_LNT(I,k,J)=0.
                   DER_LNT(I,k,J)=0.
-               ENDDO
-            ENDIF
+                  UMF_KF(I,k,J)=0.
+                  REI_KF(I,j,J)=0.
+            ENDDO
+        ENDIF
+    ELSE
+        DO k=kts,kte
+            UDR_LNT(I,k,J)=0.
+            DDR_LNT(I,k,J)=0.
+            UER_LNT(I,k,J)=0.
+            DER_LNT(I,k,J)=0.
+            UMF_KF(I,k,J)=0.
+            REI_KF(I,j,J)=0.
+        ENDDO
+    ENDIF
 
 
 
@@ -846,6 +902,7 @@ PERTLOOPS:     do jpert = 1,numBins
                        fcvt_qi_to_pr, chem1d,               & !         "
                        UDR_LNT,DDR_LNT,                     & ! LTNG
                        UER_LNT,DER_LNT,                     & ! LTNG          
+                       UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                        ltg_status,suppress,                 & ! LTNG
 #if ( WRF_CHEM == 1 )
                        maxd_acomp, maxd_aphase,             & !         "
@@ -1322,6 +1379,7 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     fcvt_qi_to_pr, chem1d,               & !         "
                     UDR_LNT,DDR_LNT,                     & ! LTNG
                     UER_LNT,DER_LNT,                     & ! LTNG
+                    UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                     ltg_status,suppress,                 & ! LTNG
 #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
@@ -1377,6 +1435,7 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     fcvt_qi_to_pr, chem1d,               & !         "
                     UDR_LNT,DDR_LNT,                     & ! LTNG
                     UER_LNT,DER_LNT,                     & ! LTNG
+                    UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                     ltg_status,suppress,                 & ! LTNG
 #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
@@ -1424,6 +1483,7 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     fcvt_qi_to_pr, chem1d,               & !         "
                     UDR_LNT,DDR_LNT,                     & ! LTNG
                     UER_LNT,DER_LNT,                     & ! LTNG
+                    UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                     ltg_status,suppress,                 & ! LTNG
 #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
@@ -1578,6 +1638,7 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                       fcvt_qi_to_pr, chem1d,               & !         "
                       UDR_LNT,DDR_LNT,                     & ! LTNG
                       UER_LNT,DER_LNT,                     & ! LTNG
+                      UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                       ltg_status,suppress,                 & ! LTNG
                       maxd_acomp, maxd_aphase,             & !         "
                       maxd_atype, maxd_asize,              & !         "
@@ -1611,7 +1672,13 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
             INTENT(INOUT) ::       UDR_LNT,       &
                                              DDR_LNT,       &
                                              UER_LNT,       &
-                                             DER_LNT
+                                             DER_LNT,      &
+                                             UMF_KF,       &
+                                             REI_KF    
+
+      INTEGER, DIMENSION( ims:ime , jms:jme ),                &
+      INTENT(INOUT) ::     ITERF_KF
+                                       
 
       LOGICAL, INTENT(INOUT) :: ltg_status
 
@@ -1726,7 +1793,7 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
             UDR2,DMF2,DER2,DDR2,DZA,THTA0,THETEE,          &
             THTAU,THETEU,THTAD,THETED,QLIQ,QICE,           &
             QLQOUT,QICOUT,PPTLIQ,PPTICE,DETLQ,DETIC,       &
-            DETLQ2,DETIC2,RATIO,RATIO2
+            DETLQ2,DETIC2,RATIO,RATIO2,REI_1D
 
 
       REAL, DIMENSION( kts:kte ) ::                        &
@@ -2526,6 +2593,9 @@ updraft:    DO NK=K,KL-1
               UD2 = 1.5*UD2
               UER(NK1)=0.5*REI*(EE1+EE2)
               UDR(NK1)=0.5*REI*(UD1+UD2)
+
+!LTNG RAS - extra entrainment output
+              REI_1D(NK1) = REI
 
 !LTNG - Start
 !...If parcel isn't buoyant but lightning is present, turn off entrainment and
@@ -3729,10 +3799,12 @@ iter:     DO NCOUNT=1,10
 !LTNG 
         !IF ( ltg_assim ) THEN
         DO NK=1,LTOP
-          UDR_LNT(I,NK,J)=UDR(NK)
-          DDR_LNT(I,NK,J)=DDR(NK)
-          UER_LNT(I,NK,J)=UER(NK)
-          DER_LNT(I,NK,J)=DER(NK)
+          UDR_LNT(I,NK,J)= UDR_LNT(I,NK,J)+UDR(NK)
+          DDR_LNT(I,NK,J)= DDR_LNT(I,NK,J)+DDR(NK)
+          UER_LNT(I,NK,J)= UER_LNT(I,NK,J)+UER(NK)
+          DER_LNT(I,NK,J)= DER_LNT(I,NK,J)+DER(NK)
+          REI_KF(I,NK,J)= REI_KF(I,NK,J)+REI_1D(NK)
+          UMF_KF(I,NK,J)= UMF_KF(I,NK,J)+UMF(NK)
         ENDDO
         !ENDIF
         
@@ -4218,6 +4290,9 @@ iter:     DO NCOUNT=1,10
 ! in the mid-troposphere.
       if( ishall==1 .and. (z_at_w1d(lcl)-pblh) > 500. ) ishall = 2
 ! end: wig, 21-Feb-2008
+
+    !LTNG RAS iterf tracking
+    ITERF_KF(I,J) = iterf
 
    END SUBROUTINE  KF_cup_PARA
 

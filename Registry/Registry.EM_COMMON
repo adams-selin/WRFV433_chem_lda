@@ -1617,9 +1617,10 @@ state    real  uer_kf           ikj     misc        1         -      rh    "UER_
 state    real  der_kf           ikj     misc        1         -      rh    "DER_KF"                "DOWNDRAFT ENTRAINMENT RATE FROM KF"  "kg s-1"
 state    real  timec_kf         ij      misc        1         -      rh    "TIMEC_KF"              "CONVECTIVE TIMESCALE FROM MSKF"  "s"
 #RAS LTNG extra entrainment outputs - start
-state    real  umf_kf           ikj     misc        1         -      rh    "UMR_KF"                "UPDRAFT MASS FLUX FROM KF"  "kg s-1"
+state    real  umf_kf           ikj     misc        1         -      rh    "UMF_KF"                "UPDRAFT MASS FLUX FROM KF"  "kg s-1"
 state    real  rei_kf           ikj     misc        1         -      rh    "REI_KF"                "RATE OF ENVIRONMENTAL INFLOW FROM KF"  "kg s-1"
 state  integer  iterf_kf         ij     misc        1         -      rh    "iterf_kf"              "No. of T/RH perturbations for LDA"     ""
+rconfig  integer accum_kf_opt  namelist,physics     1        0       rh    "accum_kf_opt"          "Switch to output accumulated (1) or instantaneous (0) entrainment"                                        ""
 #RAS LTNG extra entrainment outputs - end
 #LTNG - Start
 state    real  uer_lnt          ikj     misc        1         -      rh    "UER_LNT"                "UPDRAFT ENTRAINMENT RATE FROM KF-CuP"  "kg s-1"
