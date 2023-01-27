@@ -22,7 +22,9 @@ CONTAINS
                      ,rainc,raincv,pratec,nca                         &
                      ,cldfra_dp,cldfra_sh                             &
                      ,udr_kf,ddr_kf,uer_kf,der_kf,timec_kf            & 
-                     ,rei_kf, umf_kf, iterf_kf, kf_edrates            & !kf_edrates
+                     ,rei_kf, umf_kf, iterf_kf                        & !RAS LTNG
+                     ,accum_kf_opt, accum_kf_int                      & !RAS LTNG
+                     ,kf_edrates                                      & !kf_edrates
                      ,QC_CU,QI_CU                                     &
                      ,z,z_at_w,dz8w,mavail,pblh,p8w,psfc,tsk          &
                      ,tke_pbl, ust                                    &
@@ -499,7 +501,8 @@ CONTAINS
    INTEGER,  DIMENSION( ims:ime , jms:jme ), INTENT(INOUT) ::      &
     iterf_kf
 
-   INTEGER, INTENT(IN   )        ::   kf_edrates
+   INTEGER, INTENT(IN   )        ::                              &
+    accum_kf_opt, kf_edrates, accum_kf_int
 
    REAL, DIMENSION( ims:ime , jms:jme ), INTENT(IN) ::           &
           GSW,HT,XLAND
@@ -1632,7 +1635,10 @@ CONTAINS
              ,XLAT_V=xlat_v,LNT=lnt                             & !LTNG
              ,UER_LNT=uer_lnt,DER_LNT=der_lnt                   & !LTNG
              ,UDR_LNT=udr_lnt,DDR_LNT=ddr_lnt                   & !LTNG
-             ,REI_KF=rei_kf,UMF_KF=umf_kf,ITERF_KF=iterf_kf     ) !RAS LTNG
+             ,REI_KF=rei_kf,UMF_KF=umf_kf,ITERF_KF=iterf_kf     & !RAS LTNG
+             ,accum_kf_opt=accum_kf_opt                         & !RAS LTNG
+             ,accum_kf_int=accum_kf_int                         & !RAS LTNG
+             ,curr_secs=curr_secs                               ) !RAS LTNG
         
         
         DO J = jts,jte

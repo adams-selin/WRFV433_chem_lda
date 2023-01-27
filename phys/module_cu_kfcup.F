@@ -140,7 +140,8 @@ CONTAINS
              ,XLONG,XLAT,XLONG_U,XLAT_V,LNT                  & !LTNG
              ,UDR_LNT,DDR_LNT,UER_LNT,DER_LNT                & !LTNG
              ,REI_KF,UMF_KF,ITERF_KF, accum_kf_opt           & !RASLTNG
-                                                             )
+             ,accum_kf_int                                   & !RASLTNG
+             ,curr_secs                                      ) !RASLTNG
 !
    USE module_state_description, only:  num_chem
 #if ( WRF_CHEM == 1 )
@@ -153,9 +154,7 @@ CONTAINS
                                         ai_phase, msectional, massptr_aer, numptr_aer, &
                                         dlo_sect, dhi_sect, dens_aer, hygro_aer, sigmag_aer
 #endif
-!RAS LTNG - add alarms so we can to reset accumulations after file output
-   USE module_domain, ONLY : domain_clock_get
-   USE module_model_constants
+
 
 
 !-------------------------------------------------------------
@@ -280,7 +279,11 @@ CONTAINS
    INTEGER,  DIMENSION( ims:ime , jms:jme )                   , &
    INTENT(INOUT) ::                                 ITERF_KF
 
-   integer, intent(in) :: accum_kf_opt
+   !accum_kf_opt = option to accumulate entrainment values over a set interval
+   !accum_kf_int = interval (in minutes) over which to accumulate
+   integer, intent(in) :: accum_kf_opt, accum_kf_int 
+   REAL, intent(in) :: curr_secs !seconds since simulation start
+   LOGICAL :: is_after_kfaccum_dump
                                                   
 !LTNG  Local vars for defining bounds of grid box in Lat/Lon and time values
    REAL :: minlat,maxlat,minlon,maxlon
@@ -300,11 +303,6 @@ CONTAINS
    LOGICAL :: ltg_assim
    LOGICAL :: inbounds
 
-    ! Timing; RAS LTNG
-    ! ------
-   TYPE(WRFU_Time) :: hist_time, aux2_time, CurrTime, StartTime
-   TYPE(WRFU_TimeInterval) :: dtint, histint, aux2int
-   LOGICAL :: is_after_history_dump, is_output_timestep, is_first_timestep
 !LTNG - End
 
    LOGICAL, DIMENSION( ims:ime , jms:jme ),                  &
@@ -465,26 +463,11 @@ CALL nl_get_ltg_assim ( 1 , ltg_assim )
 
 suppress=0
 
-!Add timing checks to see if it is after a history dump
-! Get timing info 
-! Want to know if when the last history output was
-! Check history and auxhist2 alarms to check last ring time and how often
-! they are set to ring
-! -----------------------------------------------------------------------
-CALL WRFU_ALARMGET( grid%alarms( HISTORY_ALARM ), prevringtime=hist_time, &
-    ringinterval=histint)
-CALL WRFU_ALARMGET( grid%alarms( AUXHIST2_ALARM ), prevringtime=aux2_time, &
-    ringinterval=aux2int)
-
-! Get domain clock
-! ----------------
-CALL domain_clock_get ( grid, current_time=CurrTime, &
-    simulationStartTime=StartTime, time_step=dtint )
-
-! Set some booleans for use later
-! Following uses an overloaded .lt.
+!Add timing checks to see if it is after an auxhist7 dump, where we 
+!are putting the entrainment variables. Auxhist7_int is accum_kf_int.
+!Logic borrowed from module_diag_cl.F checks.
 ! ---------------------------------
-is_after_history_dump = ( Currtime .lt. hist_time + dtint )
+is_after_kfaccum_dump = ( MOD(NINT(curr_secs/DT), NINT(accum_kf_int*60/DT)) == 0 )
 
 
 !LTNG - End
@@ -661,7 +644,7 @@ main_test_on_nca: &  ! rce 11-may-2012
 !If accum_kf_opt namelist flag is on, reset only after a history dump
     if ( accum_kf_opt /= 0 ) THEN
         !That way we will accumulate entrainment values and mass flux over time.
-        IF ( is_after_history_dump ) THEN
+        IF ( is_after_kfaccum_dump ) THEN
             DO k=kts,kte
                   UDR_LNT(I,k,J)=0.
                   DDR_LNT(I,k,J)=0.
