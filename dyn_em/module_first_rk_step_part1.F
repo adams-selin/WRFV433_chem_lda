@@ -1252,8 +1252,9 @@ BENCH_START(cu_driver_tim)
      &             ,UDR_KF=grid%udr_kf,DDR_KF=grid%ddr_kf                              & ! kf_edrates
      &             ,UER_KF=grid%uer_kf,DER_KF=grid%der_kf,TIMEC_KF=grid%timec_kf       &
      &             ,REI_KF=grid%rei_kf,UMF_KF=grid%umf_kf,ITERF_KF=grid%iterf_kf       & ! RAS LTNG
-     &             ,KF_EDRATES=config_flags%kf_edrates                                 &
      &             ,ACCUM_KF_OPT=config_flags%accum_kf_opt                             & ! RAS LTNG
+     &             ,ACCUM_KF_INT=config_flags%auxhist7_interval                        & ! RAS LTNG
+     &             ,KF_EDRATES=config_flags%kf_edrates                                 &
      &             ,VMFLCL_KF=grid%vmflcl_kf, ZLCL_KF=grid%zlcl_kf                     & ! RAS LTNG
      &             ,UER_LNT_NORM=grid%uer_lnt_norm, UDR_LNT_NORM=grid%udr_lnt_norm     & ! RAS LTNG
      &             ,HTOP=grid%cutop     ,HBOT=grid%cubot       ,KPBL=grid%kpbl         &

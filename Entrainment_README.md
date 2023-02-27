@@ -24,14 +24,14 @@ frames_per_auxhist7 = 1,1,
 io_form_auxhist7 = 2
 
 &phys
-kf_edrates = 1, 1 
+accum_kf_opt = 1,
 ```
 I'm assuming here you are running with 2 domains. If only running with one, only one entry is needed per line.
 
 ## output_file_d01.txt
 That file should contain the following line, only:
 ```
-+:h:7:UDR_KF,DDR_KF,UER_KF,DER_KF,UMF_KF,REI_KF,ITERF_KF  
++:h:7:UDR_LNT,DDR_LNT,UER_LNT,DER_LNT,UMF_KF,REI_KF,ITERF_KF 
 ```
 
 Repeat that exact line for output_file_d02.txt, or for however many domains you have.

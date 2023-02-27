@@ -22,8 +22,10 @@ CONTAINS
                      ,rainc,raincv,pratec,nca                         &
                      ,cldfra_dp,cldfra_sh                             &
                      ,udr_kf,ddr_kf,uer_kf,der_kf,timec_kf            & 
-                     ,rei_kf, umf_kf, iterf_kf, kf_edrates            & !kf_edrates
-                     ,accum_kf_opt,vmflcl_kf,zlcl_kf                  & !RAS LTNG
+                     ,rei_kf, umf_kf, iterf_kf                        & !RAS LTNG
+                     ,accum_kf_opt, accum_kf_int                      & !RAS LTNG
+                     ,kf_edrates                                      & !kf_edrates
+                     ,vmflcl_kf,zlcl_kf                               & !RAS LTNG
                      ,uer_lnt_norm,udr_lnt_norm                       & !RAS LTNG
                      ,QC_CU,QI_CU                                     &
                      ,z,z_at_w,dz8w,mavail,pblh,p8w,psfc,tsk          &
@@ -505,7 +507,8 @@ CONTAINS
    INTEGER, INTENT(IN   )        ::   accum_kf_opt
    !RAS LTNG end
 
-   INTEGER, INTENT(IN   )        ::   kf_edrates
+   INTEGER, INTENT(IN   )        ::                              &
+    accum_kf_opt, kf_edrates, accum_kf_int
 
    REAL, DIMENSION( ims:ime , jms:jme ), INTENT(IN) ::           &
           GSW,HT,XLAND
@@ -1641,7 +1644,9 @@ CONTAINS
              ,REI_KF=rei_kf,UMF_KF=umf_kf,ITERF_KF=iterf_kf     & !RAS LTNG
              ,ACCUM_KF_OPT=accum_kf_opt,VMFLCL_KF=vmflcl_kf     & !RAS LTNG
              ,ZLCL_KF=zlcl_kf,UER_LNT_NORM=uer_lnt_norm         & !RAS LTNG
-             ,UDR_LNT_NORM=udr_lnt_norm                         ) !RAS LTNG
+             ,UDR_LNT_NORM=udr_lnt_norm                         & !RAS LTNG
+             ,accum_kf_int=accum_kf_int                         & !RAS LTNG
+             ,curr_secs=curr_secs                               ) !RAS LTNG
         
         
         DO J = jts,jte
