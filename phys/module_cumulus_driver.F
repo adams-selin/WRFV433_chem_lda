@@ -23,6 +23,7 @@ CONTAINS
                      ,cldfra_dp,cldfra_sh                             &
                      ,udr_kf,ddr_kf,uer_kf,der_kf,timec_kf            & 
                      ,rei_kf, umf_kf, iterf_kf                        & !RAS LTNG
+                     ,lda_cthda_opt                                   & !RAS LTNG CTH
                      ,accum_kf_opt, accum_kf_int                      & !RAS LTNG
                      ,kf_edrates                                      & !kf_edrates
                      ,vmflcl_kf,zlcl_kf                               & !RAS LTNG
@@ -504,11 +505,12 @@ CONTAINS
    !RAS LTNG
    INTEGER,  DIMENSION( ims:ime , jms:jme ), INTENT(INOUT) ::      &
     iterf_kf, vmflcl_kf, zlcl_kf
-   INTEGER, INTENT(IN   )        ::   accum_kf_opt
+   INTEGER, INTENT(IN   )        ::   accum_kf_opt, accum_kf_int, &
+     lda_cthda_opt
    !RAS LTNG end
 
    INTEGER, INTENT(IN   )        ::                              &
-    accum_kf_opt, kf_edrates, accum_kf_int
+     kf_edrates
 
    REAL, DIMENSION( ims:ime , jms:jme ), INTENT(IN) ::           &
           GSW,HT,XLAND
@@ -1642,6 +1644,7 @@ CONTAINS
              ,UER_LNT=uer_lnt,DER_LNT=der_lnt                   & !LTNG
              ,UDR_LNT=udr_lnt,DDR_LNT=ddr_lnt                   & !LTNG
              ,REI_KF=rei_kf,UMF_KF=umf_kf,ITERF_KF=iterf_kf     & !RAS LTNG
+             ,LDA_CTHDA_OPT=grid%lda_cthda_opt                  & ! RAS LTNG CTH
              ,ACCUM_KF_OPT=accum_kf_opt,VMFLCL_KF=vmflcl_kf     & !RAS LTNG
              ,ZLCL_KF=zlcl_kf,UER_LNT_NORM=uer_lnt_norm         & !RAS LTNG
              ,UDR_LNT_NORM=udr_lnt_norm                         & !RAS LTNG

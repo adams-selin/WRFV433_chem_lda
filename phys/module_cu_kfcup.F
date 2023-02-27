@@ -139,7 +139,8 @@ CONTAINS
              ,RQICUTEN,RQSCUTEN                              &
              ,XLONG,XLAT,XLONG_U,XLAT_V,LNT                  & !LTNG
              ,UDR_LNT,DDR_LNT,UER_LNT,DER_LNT                & !LTNG
-             ,REI_KF,UMF_KF,ITERF_KF, accum_kf_opt           & !RASLTNG
+             ,REI_KF,UMF_KF,ITERF_KF                         & !RASLTNG
+             ,lda_cthda_opt, accum_kf_opt                    & !RASLTNG
              ,VMFLCL_KF,ZLCL_KF,UER_LNT_NORM,UDR_LNT_NORM    & !RASLTNG
              ,accum_kf_int                                   & !RASLTNG
              ,curr_secs                                      ) !RASLTNG
@@ -289,9 +290,11 @@ CONTAINS
    integer, intent(in) :: accum_kf_opt, accum_kf_int 
    REAL, intent(in) :: curr_secs !seconds since simulation start
    LOGICAL :: is_after_kfaccum_dump
+   !lda_cthda_opt = option to turn on/of cloud top height data assimilation in LDA (LTNG DA)
+   integer, intent(in) :: lda_cthda_opt
                                                   
 !LTNG  Local vars for defining bounds of grid box in Lat/Lon and time values
-   REAL :: minlat,maxlat,minlon,maxlon
+   REAL :: minlat,maxlat,minlon,maxlon,lnthgt ! NICK CTH
 ! Variables for calculating the most unstable layer, as done in Mansell et al.
 ! (2007)
    REAL, DIMENSION(kts:kte) :: mse
@@ -630,6 +633,9 @@ main_test_on_nca: &  ! rce 11-may-2012
             IF (inbounds == .true.) THEN
                IF (LNT(I,J) .GT. 0.0) THEN
                   ltg_status=.TRUE.
+                  lnthgt = LNT(I,J) !NICK CTH
+               ELSE
+                  lnthgt = 0.0      !NICK CTH
                ENDIF
             ENDIF
 
@@ -900,7 +906,8 @@ PERTLOOPS:     do jpert = 1,numBins
                        UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                        UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
                        VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
-                       ltg_status,suppress,                 & ! LTNG
+                       ltg_status,suppress,lnthgt,          & ! LTNG !NICK CTH
+                       lda_cthda_opt,                       & !RAS LTNG CTH
 #if ( WRF_CHEM == 1 )
                        maxd_acomp, maxd_aphase,             & !         "
                        maxd_atype, maxd_asize,              & !         "
@@ -1379,8 +1386,9 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                     UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
-                    ltg_status,suppress,                 & ! LTNG
-#if ( WRF_CHEM == 1 )
+                    ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
+                    lda_cthda_opt,                       & !RAS LTNG CTH
+                    #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
                     maxd_atype, maxd_asize,              & !         "
                     ntype_aer, nsize_aer, ncomp_aer,     & !         "
@@ -1437,8 +1445,9 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                     UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
-                    ltg_status,suppress,                 & ! LTNG
-#if ( WRF_CHEM == 1 )
+                    ltg_status,suppress,lntcth,          & ! LTNG NICK CTH
+                    lda_cthda_opt,                       & !RAS LTNG CTH
+                    #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
                     maxd_atype, maxd_asize,              & !         "
                     ntype_aer, nsize_aer, ncomp_aer,     & !         "
@@ -1487,7 +1496,8 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                     UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
-                    ltg_status,suppress,                 & ! LTNG
+                    ltg_status,suppress,lntcth,          & ! LTNG NICK CTH
+                    lda_cthda_opt,                       & !RAS LTNG CTH
 #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
                     maxd_atype, maxd_asize,              & !         "
@@ -1644,7 +1654,8 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                       UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                       UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
                       VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
-                      ltg_status,suppress,                 & ! LTNG
+                      ltg_status,suppress,lntcth,          & ! LTNG NICK CTH
+                      lda_cthda_opt,                       & !RAS LTNG CTH
                       maxd_acomp, maxd_aphase,             & !         "
                       maxd_atype, maxd_asize,              & !         "
                       ntype_aer, nsize_aer, ncomp_aer,     & !         "
@@ -1862,7 +1873,8 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
       INTEGER, DIMENSION (kts:kte) :: KCHECK
 
 !LTNG - Start
-      INTEGER, INTENT(IN) :: suppress
+      INTEGER, INTENT(IN) :: suppress, lda_cthda_opt
+      REAL, INTENT(IN) :: lnthgt ! NICK CTH
       REAL, DIMENSION(kts:kte) :: mse,qq00
       REAL :: qadd
       REAL :: dpthmxx, msemaxx, tmixx, qmixx, zmixx, pmixx
@@ -2692,13 +2704,19 @@ updraft:    DO NK=K,KL-1
 !...graupel-ice collisions electrify storms...Preston and Fuelberg (2015)....
 !...Dye et al. (2000)...Bruning et al. (2014)...
 !
-            IF(ltg_status) THEN
-               IF(TLCL.GE.293.) THEN
-                 CHMIN = 6.E3
-               ELSE
-                 CHMIN = 4.E3
-               ENDIF
 
+! NICK CTH - ADDED BELOW BLOCK
+            IF(ltg_status) THEN
+               
+               IF ( lda_cthda_opt .GT. 0 ) then
+                    CHMIN = lnthgt
+               ELSE
+                    IF(TLCL.GE.293.) THEN
+                        CHMIN = 6.E3
+                    ELSE
+                        CHMIN = 4.E3
+                    ENDIF
+                ENDIF
 
 
                IF( (iterf.LT.11 .AND. CLDHGT(LC).LT.CHMIN) .OR. (iterf.LT.11 .AND. T0(LTOP-1).GT.253.15) ) THEN

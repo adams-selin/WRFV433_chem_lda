@@ -11,9 +11,9 @@ Adding the following changes below will produce a `entrain_d0<domain>_<date>` fi
 - DER_LNT, net downdraft entrainment rate (kg s-1)
 - DDR_LNT, net downdraft detrainment rate (kg s-1)
 - UMF_KF, updraft mass flux (kg s-1)
-- iterf_KF, number of iterations of the LDA scheme.
-- VMFLCL_KF, updraft mass flux at LCL (kg s-1)
-- ZLCL_KF, KF CUP height of LCL (m)
+- iterf_KF, number of iterations of the LDA scheme. Not accumulated (see below).
+- VMFLCL_KF, updraft mass flux at LCL (kg s-1). Not accumulated (see below).
+- ZLCL_KF, KF CUP height of LCL (m). Not accumulated (see below).
 
 ## Namelist Changes
 
@@ -29,13 +29,16 @@ io_form_auxhist7 = 2
 
 &phys
 accum_kf_opt = 1,
+lda_cthda_opt = 1,  
 ```
-I'm assuming here you are running with 2 domains. If only running with one, only one entry is needed per line.
+The first option, `accum_kf_opt`, sums (accumulates) the entrainment variables, except those noted above, in time since the last `entrain_d0<domain>_<date>` output file. The second option, `lda_cthda_opt`, turns on the cloud height data assimilation. If you set it to 0, it will use the regular cloud top height calculations within the KF Cup code. The lightning input file needs to include height if `lda_cthda_opt=1`, but it can contain either height or just a yes/no binary lightning flag if `lda_cthda_opt=0`.
+
+I'm assuming here you are running with 2 domains. If only running with one, only one entry is needed per line in the &phys namelist.
 
 ## output_file_d01.txt
 That file should contain the following line, only:
 ```
-+:h:7:UDR_LNT,UDR_LNT_NORM,DDR_LNT,UER_LNT,UER_LNT_NORM,DER_LNT,UMF_KF,REI_KF,ITERF_KF,VMFLCL_KF, ZLCL_KF
++:h:7:UDR_LNT,UDR_LNT_NORM,DDR_LNT,UER_LNT,UER_LNT_NORM,DER_LNT,UMF_KF,REI_KF,ITERF_KF,VMFLCL_KF,ZLCL_KF
 ```
 
 Repeat that exact line for output_file_d02.txt, or for however many domains you have.
