@@ -281,8 +281,9 @@ CONTAINS
                                                      REI_KF, &
                                                      UMF_KF  
    INTEGER,  DIMENSION( ims:ime , jms:jme )                   , &
-   INTENT(INOUT) ::                                 ITERF_KF, &
-                                                    VMFLCL_KF, &
+   INTENT(INOUT) ::                                 ITERF_KF
+   REAL,  DIMENSION( ims:ime , jms:jme )                      , &
+   INTENT(INOUT) ::                                 VMFLCL_KF, &
                                                     ZLCL_KF
 
    !accum_kf_opt = option to accumulate entrainment values over a set interval
@@ -1388,7 +1389,7 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                     ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
                     lda_cthda_opt,                       & !RAS LTNG CTH
-                    #if ( WRF_CHEM == 1 )
+#if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
                     maxd_atype, maxd_asize,              & !         "
                     ntype_aer, nsize_aer, ncomp_aer,     & !         "
@@ -1445,9 +1446,9 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                     UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
-                    ltg_status,suppress,lntcth,          & ! LTNG NICK CTH
+                    ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
                     lda_cthda_opt,                       & !RAS LTNG CTH
-                    #if ( WRF_CHEM == 1 )
+#if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
                     maxd_atype, maxd_asize,              & !         "
                     ntype_aer, nsize_aer, ncomp_aer,     & !         "
@@ -1496,7 +1497,7 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                     UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
-                    ltg_status,suppress,lntcth,          & ! LTNG NICK CTH
+                    ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
                     lda_cthda_opt,                       & !RAS LTNG CTH
 #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
@@ -1654,7 +1655,7 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                       UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
                       UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
                       VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
-                      ltg_status,suppress,lntcth,          & ! LTNG NICK CTH
+                      ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
                       lda_cthda_opt,                       & !RAS LTNG CTH
                       maxd_acomp, maxd_aphase,             & !         "
                       maxd_atype, maxd_asize,              & !         "
@@ -1685,18 +1686,20 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
 
 !LTNG
       REAL, DIMENSION( ims:ime , kms:kme , jms:jme ),      &
-            INTENT(INOUT) ::       UDR_LNT,       &
-                                   UDR_LNT_NORM
-                                             DDR_LNT,       &
-                                             UER_LNT,       &
-                                             UER_LNT_NORM,  &
-                                             DER_LNT,      &
-                                             UMF_KF,       &
-                                             REI_KF    
+            INTENT(INOUT) ::        UDR_LNT,       &
+                                    UDR_LNT_NORM,  &
+                                    DDR_LNT,       &
+                                    UER_LNT,       &
+                                    UER_LNT_NORM,  &
+                                    DER_LNT,      &
+                                    UMF_KF,       &
+                                    REI_KF    
 
       INTEGER, DIMENSION( ims:ime , jms:jme ),                &
-      INTENT(INOUT) ::     ITERF_KF, &
-                           VMFLCL_KF, &
+      INTENT(INOUT) ::     ITERF_KF
+
+      REAL, DIMENSION( ims:ime , jms:jme ),                &
+      INTENT(INOUT) ::     VMFLCL_KF, &
                            ZLCL_KF
                                        
 

@@ -504,7 +504,9 @@ CONTAINS
 
    !RAS LTNG
    INTEGER,  DIMENSION( ims:ime , jms:jme ), INTENT(INOUT) ::      &
-    iterf_kf, vmflcl_kf, zlcl_kf
+    iterf_kf
+   REAL,  DIMENSION( ims:ime , jms:jme ), INTENT(INOUT) ::      &
+     vmflcl_kf, zlcl_kf
    INTEGER, INTENT(IN   )        ::   accum_kf_opt, accum_kf_int, &
      lda_cthda_opt
    !RAS LTNG end
