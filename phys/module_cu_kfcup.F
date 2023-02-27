@@ -140,6 +140,7 @@ CONTAINS
              ,XLONG,XLAT,XLONG_U,XLAT_V,LNT                  & !LTNG
              ,UDR_LNT,DDR_LNT,UER_LNT,DER_LNT                & !LTNG
              ,REI_KF,UMF_KF,ITERF_KF, accum_kf_opt           & !RASLTNG
+             ,VMFLCL_KF,ZLCL_KF,UER_LNT_NORM,UDR_LNT_NORM    & !RASLTNG
                                                              )
 !
    USE module_state_description, only:  num_chem
@@ -272,13 +273,17 @@ CONTAINS
    REAL,  DIMENSION( ims:ime , kms:kme , jms:jme )         , &
           INTENT(INOUT) ::                         &
                                                      UDR_LNT, &
+                                                     UDR_LNT_NORM, &
                                                      DDR_LNT, &
                                                      UER_LNT, &
+                                                     UER_LNT_NORM, &
                                                      DER_LNT, &
                                                      REI_KF, &
                                                      UMF_KF  
    INTEGER,  DIMENSION( ims:ime , jms:jme )                   , &
-   INTENT(INOUT) ::                                 ITERF_KF
+   INTENT(INOUT) ::                                 ITERF_KF, &
+                                                    VMFLCL_KF, &
+                                                    ZLCL_KF
 
    integer, intent(in) :: accum_kf_opt
                                                   
@@ -659,28 +664,35 @@ main_test_on_nca: &  ! rce 11-may-2012
 !LTNG  - we want this value calculated even if LDA is off
             !IF ( ltg_assim ) THEN
 !If accum_kf_opt namelist flag is on, reset only after a history dump
-    if ( accum_kf_opt /= 0 ) THEN
-        !That way we will accumulate entrainment values and mass flux over time.
-        IF ( is_after_history_dump ) THEN
-            DO k=kts,kte
-                  UDR_LNT(I,k,J)=0.
-                  DDR_LNT(I,k,J)=0.
-                  UER_LNT(I,k,J)=0.
-                  DER_LNT(I,k,J)=0.
-                  UMF_KF(I,k,J)=0.
-                  REI_KF(I,j,J)=0.
-            ENDDO
-        ENDIF
-    ELSE
-        DO k=kts,kte
-            UDR_LNT(I,k,J)=0.
-            DDR_LNT(I,k,J)=0.
-            UER_LNT(I,k,J)=0.
-            DER_LNT(I,k,J)=0.
-            UMF_KF(I,k,J)=0.
-            REI_KF(I,j,J)=0.
-        ENDDO
-    ENDIF
+            if ( accum_kf_opt /= 0 ) THEN
+                !That way we will accumulate entrainment values and mass flux over time.
+                IF ( is_after_history_dump ) THEN
+                    DO k=kts,kte
+                        UDR_LNT(I,k,J)=0.
+                        UDR_LNT_NORM(I,k,J)=0.
+                        DDR_LNT(I,k,J)=0.
+                        UER_LNT(I,k,J)=0.
+                        UER_LNT_NORM(I,k,J)=0.
+                        DER_LNT(I,k,J)=0.
+                        UMF_KF(I,k,J)=0.
+                        REI_KF(I,j,J)=0.
+                    ENDDO
+                ENDIF
+            ELSE
+                DO k=kts,kte
+                    UDR_LNT(I,k,J)=0.
+                    UDR_LNT_NORM(I,k,J)=0.
+                    DDR_LNT(I,k,J)=0.
+                    UER_LNT(I,k,J)=0.
+                    UER_LNT_NORM(I,k,J)=0.
+                    DER_LNT(I,k,J)=0.
+                    UMF_KF(I,k,J)=0.
+                    REI_KF(I,j,J)=0.
+                ENDDO
+            ENDIF
+            !height or vertical motion at the LCL is never accumulated
+            ZLCL_KF(I,j)=0.
+            VMFLCL_KF(I,j)=0.
 
 
 
@@ -903,6 +915,8 @@ PERTLOOPS:     do jpert = 1,numBins
                        UDR_LNT,DDR_LNT,                     & ! LTNG
                        UER_LNT,DER_LNT,                     & ! LTNG          
                        UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
+                       UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                       VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                        ltg_status,suppress,                 & ! LTNG
 #if ( WRF_CHEM == 1 )
                        maxd_acomp, maxd_aphase,             & !         "
@@ -1380,6 +1394,8 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     UDR_LNT,DDR_LNT,                     & ! LTNG
                     UER_LNT,DER_LNT,                     & ! LTNG
                     UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
+                    UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                    VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                     ltg_status,suppress,                 & ! LTNG
 #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
@@ -1436,6 +1452,8 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     UDR_LNT,DDR_LNT,                     & ! LTNG
                     UER_LNT,DER_LNT,                     & ! LTNG
                     UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
+                    UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                    VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                     ltg_status,suppress,                 & ! LTNG
 #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
@@ -1484,6 +1502,8 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     UDR_LNT,DDR_LNT,                     & ! LTNG
                     UER_LNT,DER_LNT,                     & ! LTNG
                     UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
+                    UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                    VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                     ltg_status,suppress,                 & ! LTNG
 #if ( WRF_CHEM == 1 )
                     maxd_acomp, maxd_aphase,             & !         "
@@ -1639,6 +1659,8 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                       UDR_LNT,DDR_LNT,                     & ! LTNG
                       UER_LNT,DER_LNT,                     & ! LTNG
                       UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
+                      UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                      VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                       ltg_status,suppress,                 & ! LTNG
                       maxd_acomp, maxd_aphase,             & !         "
                       maxd_atype, maxd_asize,              & !         "
@@ -1670,14 +1692,18 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
 !LTNG
       REAL, DIMENSION( ims:ime , kms:kme , jms:jme ),      &
             INTENT(INOUT) ::       UDR_LNT,       &
+                                   UDR_LNT_NORM
                                              DDR_LNT,       &
                                              UER_LNT,       &
+                                             UER_LNT_NORM,  &
                                              DER_LNT,      &
                                              UMF_KF,       &
                                              REI_KF    
 
       INTEGER, DIMENSION( ims:ime , jms:jme ),                &
-      INTENT(INOUT) ::     ITERF_KF
+      INTENT(INOUT) ::     ITERF_KF, &
+                           VMFLCL_KF, &
+                           ZLCL_KF
                                        
 
       LOGICAL, INTENT(INOUT) :: ltg_status
@@ -3800,12 +3826,16 @@ iter:     DO NCOUNT=1,10
         !IF ( ltg_assim ) THEN
         DO NK=1,LTOP
           UDR_LNT(I,NK,J)= UDR_LNT(I,NK,J)+UDR(NK)
+          UDR_LNT_NORM(I,NK,J)= UDR_LNT_NORM(I,NK,J)+(UDR(NK)/VMFLCL)
           DDR_LNT(I,NK,J)= DDR_LNT(I,NK,J)+DDR(NK)
           UER_LNT(I,NK,J)= UER_LNT(I,NK,J)+UER(NK)
+          UER_LNT_NORM(I,NK,J)= UER_LNT_NORM(I,NK,J)+(UER(NK)/VMFLCL)
           DER_LNT(I,NK,J)= DER_LNT(I,NK,J)+DER(NK)
           REI_KF(I,NK,J)= REI_KF(I,NK,J)+REI_1D(NK)
           UMF_KF(I,NK,J)= UMF_KF(I,NK,J)+UMF(NK)
         ENDDO
+        VMFLCL_KF(I,J) = VMFLCL
+        ZLCL_KF(I,J) = ZLCL
         !ENDIF
         
 !     
