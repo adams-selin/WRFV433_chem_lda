@@ -665,7 +665,7 @@ main_test_on_nca: &  ! rce 11-may-2012
                         UER_LNT_NORM(I,k,J)=0.
                         DER_LNT(I,k,J)=0.
                         UMF_KF(I,k,J)=0.
-                        REI_KF(I,j,J)=0.
+                        REI_KF(I,k,J)=0.
                     ENDDO
                 ENDIF
             ELSE
@@ -677,7 +677,7 @@ main_test_on_nca: &  ! rce 11-may-2012
                     UER_LNT_NORM(I,k,J)=0.
                     DER_LNT(I,k,J)=0.
                     UMF_KF(I,k,J)=0.
-                    REI_KF(I,j,J)=0.
+                    REI_KF(I,k,J)=0.
                 ENDDO
             ENDIF
             !height or vertical motion at the LCL is never accumulated
