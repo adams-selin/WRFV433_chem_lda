@@ -1162,6 +1162,7 @@
                                  ims, ime, jms, jme, kms, kme,    &
                                  its, ite, jts, jte, kts )
              end if
+
         ! accumulate convective tendencies
         DO nv=PARAM_FIRST_SCALAR,num_chem_ct
           grid%conv_ct(its:ite,kts:kte,jts:jte,nv) = grid%conv_ct(its:ite,kts:kte,jts:jte,nv) + &
@@ -1486,7 +1487,18 @@ if ( cam_mam_aerosols ) &
         !
         if( config_flags%chem_conv_tr>0 .and. &
              config_flags%cu_physics==kfcupscheme ) then
-           
+
+        !******************************
+        !cansu duzgun -- 6 sept 2023
+        if(config_flags%chem_opt >0 )then
+        ! save old concentrations for convective tendencies
+        DO nv=PARAM_FIRST_SCALAR,num_chem_ct
+           chem_old(its:ite,kts:kte,jts:jte,nv) = chem(its:ite,kts:kte,jts:jte,chem_ct_indices(nv))
+        ENDDO
+        endif
+        !cansu duzgun -- 6 sept 2023
+        !*****************************
+
            call chem_cup_driver(                                                        &
                 grid%id, ktau, grid%ktauc, grid%dt, dtstepc, config_flags,              &
                 t_phy, p_phy, rho, rri, dz8w, zmid, z_at_w,                             &
@@ -1529,7 +1541,20 @@ if ( cam_mam_aerosols ) &
                 ids,ide, jds,jde, kds,kde,                                              &
                 ims,ime, jms,jme, kms,kme,                                              &
                 its,ite, jts,jte, kts,kte                                               )
-           
+
+        !*****************************
+        !cansu duzgun -- 6 sept 2023
+        if(config_flags%chem_opt >0 )then
+        ! accumulate convective tendencies
+        DO nv=PARAM_FIRST_SCALAR,num_chem_ct
+          grid%conv_ct(its:ite,kts:kte,jts:jte,nv) = grid%conv_ct(its:ite,kts:kte,jts:jte,nv) + &
+                                                            (chem(its:ite,kts:kte,jts:jte,chem_ct_indices(nv)) - &
+                                                         chem_old(its:ite,kts:kte,jts:jte,nv))
+        ENDDO
+        endif
+        !cansu duzgun -- 6 sept 2023
+        !*****************************
+
         else
            grid%chem_cupflag = 0
         endif
