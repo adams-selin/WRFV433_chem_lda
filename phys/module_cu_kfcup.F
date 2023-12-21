@@ -389,6 +389,18 @@ CONTAINS
                                                       DQSDT, &
                                                        DTDT
 
+!! RAS LNT 202301220 Add 1D variables for entrainment output, to mimic physical variables
+   REAL, DIMENSION( kts:kte ) ::                             &
+                                                    UDR_LNT_1D, &
+                                                    UDR_LNT_NORM_1D, &
+                                                    DDR_LNT_1D, &
+                                                    UER_LNT_1D, &
+                                                    UER_LNT_NORM_1D, &
+                                                    DER_LNT_1D, &
+                                                    REI_KF_1D, &
+                                                    UMF_KF_1D  
+!! RAS LNT 202301220 End
+
    REAL, DIMENSION( kts:kte, 1:num_chem ) ::                 &
                                                      chem1d    !rce, CuP, 11-may-2012
 
@@ -681,8 +693,8 @@ main_test_on_nca: &  ! rce 11-may-2012
                 ENDDO
             ENDIF
             !height or vertical motion at the LCL is never accumulated
-            ZLCL_KF(I,j)=0.
-            VMFLCL_KF(I,j)=0.
+            ZLCL_KF(I,J)=0.
+            VMFLCL_KF(I,J)=0.
 
 
 
@@ -720,6 +732,17 @@ main_test_on_nca: &  ! rce 11-may-2012
                z_at_w1d(k) = z_at_w(i,k,j)    !wig, CuP 15-Sep-2006
                DZ1D(k)=dz8w(I,K,J)
                cldfra_cup1d(k) = cldfra_cup(i,k,j) !wig, CuP 20-Sep-2006
+
+               !! RAS LNT 202301220 
+               UDR_LNT_1D(K) = UDR_LNT(I,K,J)
+               UDR_LNT_NORM_1D(K) = UDR_LNT_NORM(I,K,J)
+               DDR_LNT_1D(K) = DDR_LNT(I,K,J)
+               UER_LNT_1D(K) = UER_LNT(I,K,J)
+               UER_LNT_NORM_1D(K) = UER_LNT_NORM(I,K,J)
+               DER_LNT_1D(K) = DER_LNT(I,K,J)
+               UMF_KF_1D(K) = UMF_KF(I,K,J)
+               REI_KF_1D(K) = REI_KF(I,K,J)
+               !! RAS LNT 202301220 
             ENDDO
 
             if ( flag_chem ) then  ! rce 11-may-2012 start
@@ -902,11 +925,11 @@ PERTLOOPS:     do jpert = 1,numBins
                        wact, qndrop1d, qc1d, qi1d,          & !         "
                        fcvt_qc_to_qi, fcvt_qc_to_pr,        & !         "
                        fcvt_qi_to_pr, chem1d,               & !         "
-                       UDR_LNT,DDR_LNT,                     & ! LTNG
-                       UER_LNT,DER_LNT,                     & ! LTNG          
-                       UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
-                       UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
-                       VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
+                       UDR_LNT_1D,DDR_LNT_1D,               & ! RAS LNT 20231220
+                       UER_LNT_1D,DER_LNT_1D,               & ! RAS LNT 20231220      
+                       UMF_KF_1D,REI_KF_1D,ITERF_KF,        & ! RAS LNT 20231220
+                       UER_LNT_NORM_1D,UDR_LNT_NORM_1D,     & ! RAS LNT 20231220
+                       VMFLCL_KF,ZLCL_KF,                   & ! RAS LTNG
                        ltg_status,suppress,lnthgt,          & ! LTNG !NICK CTH
                        lda_cthda_opt,                       & !RAS LTNG CTH
 #if ( WRF_CHEM == 1 )
@@ -1382,10 +1405,10 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     wact, qndrop1d, qc1d, qi1d,          & !         "
                     fcvt_qc_to_qi, fcvt_qc_to_pr,        & !         "
                     fcvt_qi_to_pr, chem1d,               & !         "
-                    UDR_LNT,DDR_LNT,                     & ! LTNG
-                    UER_LNT,DER_LNT,                     & ! LTNG
-                    UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
-                    UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                    UDR_LNT_1D,DDR_LNT_1D,               & ! RAS LNT 20231220
+                    UER_LNT_1D,DER_LNT_1D,               & ! RAS LNT 20231220      
+                    UMF_KF_1D,REI_KF_1D,ITERF_KF,        & ! RAS LNT 20231220
+                    UER_LNT_NORM_1D,UDR_LNT_NORM_1D,     & ! RAS LNT 20231220
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                     ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
                     lda_cthda_opt,                       & !RAS LTNG CTH
@@ -1441,10 +1464,10 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     wact, qndrop1d, qc1d, qi1d,          & !         "
                     fcvt_qc_to_qi, fcvt_qc_to_pr,        & !         "
                     fcvt_qi_to_pr, chem1d,               & !         "
-                    UDR_LNT,DDR_LNT,                     & ! LTNG
-                    UER_LNT,DER_LNT,                     & ! LTNG
-                    UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
-                    UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                    UDR_LNT_1D,DDR_LNT_1D,               & ! RAS LNT 20231220
+                    UER_LNT_1D,DER_LNT_1D,               & ! RAS LNT 20231220      
+                    UMF_KF_1D,REI_KF_1D,ITERF_KF,        & ! RAS LNT 20231220
+                    UER_LNT_NORM_1D,UDR_LNT_NORM_1D,     & ! RAS LNT 20231220
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                     ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
                     lda_cthda_opt,                       & !RAS LTNG CTH
@@ -1492,10 +1515,10 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                     wact, qndrop1d, qc1d, qi1d,          & !         "
                     fcvt_qc_to_qi, fcvt_qc_to_pr,        & !         "
                     fcvt_qi_to_pr, chem1d,               & !         "
-                    UDR_LNT,DDR_LNT,                     & ! LTNG
-                    UER_LNT,DER_LNT,                     & ! LTNG
-                    UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
-                    UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                    UDR_LNT_1D,DDR_LNT_1D,               & ! RAS LNT 20231220
+                    UER_LNT_1D,DER_LNT_1D,               & ! RAS LNT 20231220      
+                    UMF_KF_1D,REI_KF_1D,ITERF_KF,        & ! RAS LNT 20231220
+                    UER_LNT_NORM_1D,UDR_LNT_NORM_1D,     & ! RAS LNT 20231220
                     VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                     ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
                     lda_cthda_opt,                       & !RAS LTNG CTH
@@ -1553,7 +1576,20 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
             end if
 
             end if main_test_on_cupflag  ! rce 11-may-2012
-            
+
+! RAS LNT 20231220 Move 1D tracker variables back into 3D.    
+    DO K=kts,kte
+        UDR_LNT(I,K,J)=UDR_LNT_1D(K)
+        UDR_LNT_NORM(I,K,J)=UDR_LNT_NORM_1D(K)
+        DDR_LNT(I,K,J)=DDR_LNT_1D(K)
+        UER_LNT(I,K,J)=UER_LNT_1D(K)
+        UER_LNT_NORM(I,K,J)=UER_LNT_NORM_1D(K)
+        DER_LNT(I,K,J)=DER_LNT_1D(K)
+        UMF_KF(I,K,J)=UMF_KF_1D(K)
+        REI_KF(I,K,J)=REI_KF_1D(K)
+    ENDDO     
+
+
 
 ! This was moved from earlier in the routine...
       IF(PRESENT(rthcuten).AND.PRESENT(rqvcuten)) THEN
@@ -1650,10 +1686,10 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                       wact, qndrop1d, qc1d, qi1d,          & !         "
                       fcvt_qc_to_qi, fcvt_qc_to_pr,        & !         "
                       fcvt_qi_to_pr, chem1d,               & !         "
-                      UDR_LNT,DDR_LNT,                     & ! LTNG
-                      UER_LNT,DER_LNT,                     & ! LTNG
-                      UMF_KF,REI_KF,ITERF_KF,              & !RAS LTNG
-                      UER_LNT_NORM,UDR_LNT_NORM,           & !RAS LTNG
+                      UDR_LNT_1D,DDR_LNT_1D,               & ! RAS LNT 20231220
+                      UER_LNT_1D,DER_LNT_1D,               & ! RAS LNT 20231220      
+                      UMF_KF_1D,REI_KF_1D,ITERF_KF,        & ! RAS LNT 20231220
+                      UER_LNT_NORM_1D,UDR_LNT_NORM_1D,     & ! RAS LNT 20231220
                       VMFLCL_KF,ZLCL_KF,                   & !RAS LTNG
                       ltg_status,suppress,lnthgt,          & ! LTNG NICK CTH
                       lda_cthda_opt,                       & !RAS LTNG CTH
@@ -1684,16 +1720,18 @@ main_test_on_deep_shall_freq: &  ! rce 11-may-2012
                                                   cupflag    !CuP, wig 9-Oct-2006
 !
 
-!LTNG
-      REAL, DIMENSION( ims:ime , kms:kme , jms:jme ),      &
-            INTENT(INOUT) ::        UDR_LNT,       &
-                                    UDR_LNT_NORM,  &
-                                    DDR_LNT,       &
-                                    UER_LNT,       &
-                                    UER_LNT_NORM,  &
-                                    DER_LNT,      &
-                                    UMF_KF,       &
-                                    REI_KF    
+!! RAS LNT 202301220 Add 1D variables for entrainment output, to mimic physical variables
+    REAL, DIMENSION( kts:kte ) ::                             &
+                                                  UDR_LNT_1D, &
+                                                  UDR_LNT_NORM_1D, &
+                                                  DDR_LNT_1D, &
+                                                  UER_LNT_1D, &
+                                                  UER_LNT_NORM_1D, &
+                                                  DER_LNT_1D, &
+                                                  REI_KF_1D, &
+                                                  UMF_KF_1D  
+!! RAS LNT 202301220 End
+
 
       INTEGER, DIMENSION( ims:ime , jms:jme ),                &
       INTENT(INOUT) ::     ITERF_KF
@@ -3827,16 +3865,17 @@ iter:     DO NCOUNT=1,10
 
 
 !LTNG 
-        !IF ( ltg_assim ) THEN
+       !! RAS LNT 202301220 
         DO NK=1,LTOP
-          UDR_LNT(I,NK,J)= UDR_LNT(I,NK,J)+UDR(NK)
-          UDR_LNT_NORM(I,NK,J)= UDR_LNT_NORM(I,NK,J)+(UDR(NK)/VMFLCL)
-          DDR_LNT(I,NK,J)= DDR_LNT(I,NK,J)+DDR(NK)
-          UER_LNT(I,NK,J)= UER_LNT(I,NK,J)+UER(NK)
-          UER_LNT_NORM(I,NK,J)= UER_LNT_NORM(I,NK,J)+(UER(NK)/VMFLCL)
-          DER_LNT(I,NK,J)= DER_LNT(I,NK,J)+DER(NK)
-          REI_KF(I,NK,J)= REI_KF(I,NK,J)+REI_1D(NK)
-          UMF_KF(I,NK,J)= UMF_KF(I,NK,J)+UMF(NK)
+          UDR_LNT_1D(NK)= UDR_LNT_1D(NK)+UDR(NK)
+          UDR_LNT_NORM_1D(NK)= UDR_LNT_NORM_1D(NK)+(UDR(NK)/VMFLCL)
+          DDR_LNT_1D(NK)= DDR_LNT_1D(NK)+DDR(NK)
+          UER_LNT_1D(NK)= UER_LNT_1D(NK)+UER(NK)
+          UER_LNT_NORM_1D(NK)= UER_LNT_NORM_1D(NK)+(UER(NK)/VMFLCL)
+          DER_LNT_1D(NK)= DER_LNT_1D(NK)+DER(NK)
+          REI_KF_1D(NK)= REI_KF_1D(NK)+REI_1D(NK)
+          UMF_KF_1D(NK)= UMF_KF_1D(NK)+UMF(NK)
+        !! RAS LNT 202301220 
         ENDDO
         VMFLCL_KF(I,J) = VMFLCL
         ZLCL_KF(I,J) = ZLCL

@@ -119,7 +119,7 @@ LIBWRFLIB = libwrflib.a
                       $(WRF_SRC_ROOT_DIR)/frame/pack_utils.o
 
  LIB_EXTERNAL    = \
-                      -L$(WRF_SRC_ROOT_DIR)/external/io_netcdf -lwrfio_nf -L/gpfs/home/rselin_aer_com/netcdf/lib -lnetcdff -lnetcdf     
+                      -L$(WRF_SRC_ROOT_DIR)/external/io_netcdf -lwrfio_nf -L/gpfs/home/ra23b/netcdf_intel/lib -lnetcdff -lnetcdf     -L/gpfs/home/ra23b/hdf5_intel/lib -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran -lhdf5 -lm -lz
 
 
 #### Architecture specific settings ####
@@ -174,7 +174,7 @@ CC              =       $(DM_CC) -DFSEEKO64_OK
 LD              =       $(FC)
 RWORDSIZE       =       $(NATIVE_RWORDSIZE)
 PROMOTION       =       -real-size `expr 8 \* $(RWORDSIZE)` -i4
-ARCH_LOCAL      =       -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM $(NETCDF4_IO_OPTS) -DRPC_TYPES=2
+ARCH_LOCAL      =       -DNONSTANDARD_SYSTEM_FUNC  -DWRF_USE_CLM -DRPC_TYPES=2
 CFLAGS_LOCAL    =       -w -O3 -ip #-xHost -fp-model fast=2 -no-prec-div -no-prec-sqrt -ftz -no-multibyte-chars # -DRSL0_ONLY
 LDFLAGS_LOCAL   =       -ip #-xHost -fp-model fast=2 -no-prec-div -no-prec-sqrt -ftz -align all -fno-alias -fno-common
 CPLUSPLUSLIB    =       
@@ -191,7 +191,7 @@ RECORDLENGTH    =       -assume byterecl
 FCBASEOPTS_NO_G =       -ip -fp-model precise -w -ftz -align all -fno-alias $(FORMAT_FREE) $(BYTESWAPIO) #-xHost -fp-model fast=2 -no-heap-arrays -no-prec-div -no-prec-sqrt -fno-common
 FCBASEOPTS      =       $(FCBASEOPTS_NO_G) $(FCDEBUG)
 MODULE_SRCH_FLAG =     
-TRADFLAG        =      -traditional-cpp $(NETCDF4_IO_OPTS)
+TRADFLAG        =      -traditional-cpp
 CPP             =      /lib/cpp -P -nostdinc
 AR              =      ar
 ARFLAGS         =      ru
@@ -217,7 +217,7 @@ ARCHFLAGS       =    $(COREDEFS) -DIWORDSIZE=$(IWORDSIZE) -DDWORDSIZE=$(DWORDSIZ
                        \
                        \
                        \
-                       \
+                      -DHDF5 \
                        \
                        \
                        -DLANDREAD_STUB=1 \
@@ -260,13 +260,13 @@ INCLUDE_MODULES =    $(MODULE_SRCH_FLAG) \
 REGISTRY        =    Registry
 CC_TOOLS_CFLAGS = -DNMM_CORE=$(WRF_NMM_CORE)
 
-LIB             =    $(LIB_BUNDLED) $(LIB_EXTERNAL) $(LIB_LOCAL) $(LIB_WRF_HYDRO)  $(NETCDF4_DEP_LIB)
+LIB             =    $(LIB_BUNDLED) $(LIB_EXTERNAL) $(LIB_LOCAL) $(LIB_WRF_HYDRO) 
 LDFLAGS         =    $(OMP) $(FCFLAGS) $(LDFLAGS_LOCAL) 
 ENVCOMPDEFS     =     -DWRF_CHEM -DBUILD_CHEM=1
 WRF_CHEM	=	1 
 CPPFLAGS        =    $(ARCHFLAGS) $(ENVCOMPDEFS) -I$(LIBINCLUDE) $(TRADFLAG) 
-NETCDFPATH      =    /gpfs/home/rselin_aer_com/netcdf
-HDF5PATH        =    
+NETCDFPATH      =    /gpfs/home/ra23b/netcdf_intel
+HDF5PATH        =    /gpfs/home/ra23b/hdf5_intel
 WRFPLUSPATH     =    
 RTTOVPATH       =    
 PNETCDFPATH     =    
