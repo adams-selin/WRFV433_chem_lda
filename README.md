@@ -11,6 +11,6 @@ The WRF Model is open-source code in the public domain, and its use is unrestric
 
 ## LDA version
 
-This is WRF-Chem v4.3.3 with LDA included, as 'delivered' by Nick on June 15, 2022.
+This is WRF-Chem v4.3.3 with LDA included.
 
-Becky is adding a branch to write out entrainment data from KF.
+Becky has added a branch to write out entrainment data from KF. That is the output_entrainment branch.
